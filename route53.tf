@@ -7,7 +7,6 @@ resource "aws_route53_record" "www_seoul" {
   name           = "www.grosmichel.click"
   type           = "A"
   set_identifier = "seoul"
-  region         = "ap-northeast-2"
 
   alias {
     name                   = aws_cloudfront_distribution.cdn.domain_name
@@ -25,7 +24,6 @@ resource "aws_route53_record" "www_virginia" {
   name           = "www.grosmichel.click"
   type           = "A"
   set_identifier = "virginia"
-  region         = "us-east-1"
 
   alias {
     name                   = aws_cloudfront_distribution.cdn.domain_name
