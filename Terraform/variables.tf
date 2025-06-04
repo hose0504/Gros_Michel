@@ -13,3 +13,8 @@ variable "private_subnets" {
 variable "azs" {
   type = list(string)
 }
+
+variable "domain_name" {
+  description = "Route53에서 사용할 도메인 이름 (예: grosmichel.click)"
+  type        = string
+}
