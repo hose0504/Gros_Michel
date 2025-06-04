@@ -21,16 +21,16 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
-        run: terraform init
+        run: cd Terraform && terraform init
 
       - name: Terraform Format Check
-        run: terraform fmt -check
+        run: cd Terraform && terraform fmt -check
 
       - name: Terraform Validate
-        run: terraform validate
+        run: cd Terraform && terraform validate
 
       - name: Terraform Plan
-        run: terraform plan
+        run: cd Terraform && terraform plan
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: cd Terraform && terraform apply -auto-approve

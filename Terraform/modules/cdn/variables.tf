@@ -1,10 +1,10 @@
 variable "origin_domain_name" {
-  description = "S3 버킷의 도메인 이름 (예: bucket-name.s3.ap-northeast-2.amazonaws.com)"
+  description = "S3 버킷 도메인 이름 (예: bucket-name.s3.ap-northeast-2.amazonaws.com)"
   type        = string
 }
 
 variable "tag_name" {
-  description = "CloudFront 배포 이름"
+  description = "CloudFront 배포 리소스 이름 태그"
   type        = string
   default     = "GlobalWebCDN"
 }
