@@ -12,3 +12,4 @@ variable "regions" {
     cdn_zone_id = string   # CloudFront hosted zone ID
   }))
 }
+
