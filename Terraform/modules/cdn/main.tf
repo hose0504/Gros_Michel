@@ -1,6 +1,6 @@
-resource "aws_cloudfront_distribution" "cdn" {
+resource "aws_cloudfront_distribution" "this" {
   origin {
-    domain_name = aws_s3_bucket.db_cache.bucket_regional_domain_name
+    domain_name = var.origin_domain_name
     origin_id   = "cdn-origin"
   }
 
@@ -33,7 +33,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 
   tags = {
-    Name        = "GlobalWebCDN"
-    Environment = "prod"
+    Name        = var.tag_name
+    Environment = var.environment
   }
 }

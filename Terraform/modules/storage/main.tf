@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "db_cache" {
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "db_cache_block" {
+resource "aws_s3_bucket_public_access_block" "block" {
   bucket = aws_s3_bucket.db_cache.id
 
   block_public_acls       = true
