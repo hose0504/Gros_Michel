@@ -3,3 +3,5 @@ terraform.tfstate.backup
 .terraform/
 terraform.tfvars
 terraform.exe
+terraform.tfvars
+*.auto.tfvars
