@@ -1,15 +1,17 @@
-name: Terraform Destroy
+name: Terraform Destroy AWS
 
 on:
   push:
     branches:
       - main
+    # "destroy"라는 단어가 커밋 메시지에 포함된 경우에만 실행
+    # 예: git commit -m "destroy: cleanup resources"
     paths:
-      - "aws/Terraform/**" # aws 디렉토리에 변경이 있을 때만 작동
+      - "Terraform/**"
 
 jobs:
   destroy:
-    if: contains(github.event.head_commit.message, 'destroy') # 커밋 메시지에 destroy 포함 시 실행
+    if: contains(github.event.head_commit.message, 'destroy')
     runs-on: ubuntu-latest
 
     env:
@@ -20,7 +22,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: aws/Terraform
+        working-directory: Terraform
 
     steps:
       - name: Checkout code

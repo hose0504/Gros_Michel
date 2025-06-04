@@ -1,11 +1,11 @@
-name: Terraform CI/CD
+name: Terraform AWS CI/CD
 
 on:
   push:
     branches:
       - main
     paths:
-      - "aws/Terraform/**" # ✅ 이 경로에 변경이 생길 때만 실행됨
+      - "Terraform/**"
 
 jobs:
   terraform:
@@ -19,7 +19,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: aws/Terraform # ✅ 이 디렉토리 기준으로 모든 run 명령 수행
+        working-directory: Terraform
 
     steps:
       - name: Checkout code
