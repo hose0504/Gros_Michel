@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "Terraform/**"
-    # 커밋 메시지에 'destroy'가 포함되어 있을 때만 실행
-    # (커밋 메시지 예: "060502 destroy aws")
 
 jobs:
   destroy:
