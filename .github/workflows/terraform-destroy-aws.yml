@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
-    # "destroy"라는 단어가 커밋 메시지에 포함된 경우에만 실행
-    # 예: git commit -m "destroy: cleanup resources"
     paths:
       - "Terraform/**"
+    # 커밋 메시지에 'destroy'가 포함되어 있을 때만 실행
+    # (커밋 메시지 예: "060502 destroy aws")
 
 jobs:
   destroy:
@@ -30,9 +30,6 @@ jobs:
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
-
-      - name: Terraform Init
-        run: terraform init
 
       - name: Terraform Destroy
         run: terraform destroy -auto-approve -var-file="terraform.tfvars"
