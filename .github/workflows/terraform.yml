@@ -30,7 +30,7 @@ jobs:
         run: cd Terraform && terraform validate
 
       - name: Terraform Plan
-        run: cd Terraform && terraform plan
+        run: terraform plan -var="aws_region=ap-northeast-2"
 
       - name: Terraform Apply
         run: cd Terraform && terraform apply -auto-approve
