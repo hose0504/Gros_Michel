@@ -5,10 +5,11 @@ on:
     branches:
       - main
     paths:
-      - "Terraform/**" # 현재 구조 반영
+      - "Terraform/**"
 
 jobs:
   terraform:
+    if: contains(github.event.head_commit.message, 'apply') && !contains(github.event.head_commit.message, 'destroy')
     runs-on: ubuntu-latest
 
     env:
@@ -41,5 +42,4 @@ jobs:
         run: terraform plan -var-file="terraform.tfvars"
 
       - name: Terraform Apply
-        if: "!contains(github.event.head_commit.message, 'destroy')" # 커밋 메시지에 'destroy' 없을 때만 실행
         run: terraform apply -auto-approve -var-file="terraform.tfvars"
