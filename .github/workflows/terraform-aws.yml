@@ -4,13 +4,12 @@ on:
   push:
     branches:
       - main
-    # 모든 파일 변경 시 트리거
     paths:
       - "**"
 
 jobs:
-  apply:
-    if: contains(github.event.head_commit.message, 'apply') && !contains(github.event.head_commit.message, 'destroy')
+  terraform-apply:
+    if: contains(github.event.head_commit.message, 'apply')
     runs-on: ubuntu-latest
 
     env:
@@ -22,10 +21,10 @@ jobs:
         working-directory: Terraform
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
@@ -37,7 +36,7 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -var-file="terraform.tfvars"
 
-  destroy:
+  terraform-destroy:
     if: contains(github.event.head_commit.message, 'destroy')
     runs-on: ubuntu-latest
 
@@ -50,10 +49,10 @@ jobs:
         working-directory: Terraform
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
@@ -62,10 +61,9 @@ jobs:
       - name: Terraform Destroy
         run: terraform destroy -auto-approve -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -var-file="terraform.tfvars"
 
-  fallback:
+  no-action:
     if: "!contains(github.event.head_commit.message, 'apply') && !contains(github.event.head_commit.message, 'destroy')"
     runs-on: ubuntu-latest
-
     steps:
-      - name: Notify
-        run: echo "No 'apply' or 'destroy' keyword found in commit message. No infrastructure change executed."
+      - name: No action matched
+        run: echo "No 'apply' or 'destroy' keyword in commit message. Skipping infrastructure change."
