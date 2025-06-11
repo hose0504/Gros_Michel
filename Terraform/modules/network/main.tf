@@ -55,12 +55,6 @@ resource "aws_route_table" "public" {
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
-  # NAT Gateway 제거됨 - NAT Instance 또는 나중에 route 추가 필요
-  # route {
-  #   cidr_block     = "0.0.0.0/0"
-  #   nat_gateway_id = aws_nat_gateway.nat.id
-  # }
-
   tags = {
     Name = "${var.vpc_name}-private-rt"
   }
