@@ -41,6 +41,10 @@ resource "aws_subnet" "private" {
 
 resource "aws_eip" "nat" {
   domain = "vpc"
+
+  tags = {
+    Name = "${var.vpc_name}-nat-eip"
+  }
 }
 
 resource "aws_nat_gateway" "nat" {
@@ -48,7 +52,7 @@ resource "aws_nat_gateway" "nat" {
   subnet_id     = aws_subnet.public[0].id
 
   tags = {
-    Name = "${var.vpc_name}-nat"
+    Name = "${var.vpc_name}-nat-gateway"
   }
 }
 
