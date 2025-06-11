@@ -69,5 +69,5 @@ module "nat_instance" {
 resource "aws_route" "private_to_nat" {
   route_table_id         = module.network.private_route_table_id
   destination_cidr_block = "0.0.0.0/0"
-  instance_id            = module.nat_instance.nat_instance_id
+  network_interface_id   = module.nat_instance.nat_instance_eni_id
 }
