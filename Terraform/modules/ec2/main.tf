@@ -35,7 +35,7 @@ subnet_id              = var.subnet_id
 key_name               = var.key_name
 vpc_security_group_ids = [aws_security_group.this.id] 
 
-user_data = file("${path.root}/scripts/userdata.sh")
+user_data = file("${path.root}/scripts/user.sh")
 
 tags = {
     Name =  "terraform-nginx"
