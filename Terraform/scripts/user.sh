@@ -17,10 +17,9 @@ yum install -y awscli
 # -----------------------
 # Install kubectl (latest stable version)
 # -----------------------
-curl -o /usr/local/bin/kubectl \
-  -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.29.0/2024-05-17/bin/linux/amd64/kubectl"
-chmod +x /usr/local/bin/kubectl
-kubectl version --client
+curl -LO "https://dl.k8s.io/release/v1.29.2/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
 
 # -----------------------
 # Create a tomcat user and group
