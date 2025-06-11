@@ -18,3 +18,16 @@ variable "domain_name" {
   description = "Route53에서 사용할 도메인 이름 (예: grosmichel.click)"
   type        = string
 }
+
+variable "cluster_name" {
+  description = "gros_michel_EKS"
+  type        = string
+  default     = "gros-cluster"
+}
+
+variable "cluster_version" {
+  description = "1.32"
+  type        = string
+  default     = "1.29"
+}
+
