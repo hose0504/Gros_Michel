@@ -30,6 +30,15 @@ module "dns" {
   ]
 }
 
+terraform {
+  backend "s3" {
+    bucket  = "grosmichel-terraform-state"
+    key     = "global/terraform.tfstate"
+    region  = "ap-northeast-2"
+    encrypt = true
+  }
+}
+
 module "web_ec2" {
   source           = "./modules/ec2"
   instance_name    = "web-ec2"
