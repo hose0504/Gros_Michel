@@ -60,8 +60,6 @@ module "eks" {
   subnet_ids      = module.vpc.private_subnets
 }
 
-
-
 module "nat_instance" {
   source           = "./modules/nat_instance"
   vpc_id           = module.network.vpc_id
@@ -73,15 +71,4 @@ resource "aws_route" "private_to_nat" {
   route_table_id         = module.network.private_route_table_id
   destination_cidr_block = "0.0.0.0/0"
   network_interface_id   = module.nat_instance.nat_instance_eni_id
-}
-
-module "vpc" {
-  source = "./modules/network"
-
-  vpc_name        = var.vpc_name
-  vpc_cidr_block  = var.vpc_cidr_block
-  public_subnets  = var.public_subnets
-  private_subnets = var.private_subnets
-  azs             = var.azs
-  domain_name     = var.domain_name
 }
