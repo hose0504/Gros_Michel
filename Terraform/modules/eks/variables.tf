@@ -1,10 +1,16 @@
-variable "cluster_name" {}
-variable "cluster_version" {
-  default = "1.29"
+variable "cluster_name" {
+  type = string
 }
-variable "vpc_id" {}
+
+variable "cluster_version" {
+  type    = string
+  default = "1.32"
+}
+
+variable "vpc_id" {
+  type = string
+}
+
 variable "subnet_ids" {
   type = list(string)
 }
-
-

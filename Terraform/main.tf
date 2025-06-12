@@ -47,17 +47,19 @@ module "web_ec2" {
   key_name         = "key1"
   allow_all_access = true
 
-  subnet_id        = module.network.public_subnet_ids[0] # ✅ 여기 주의
-  vpc_id           = module.network.vpc_id
+  subnet_id = module.network.public_subnet_ids[0] # ✅ 여기 주의
+  vpc_id    = module.network.vpc_id
 }
 
 module "eks" {
   source          = "./modules/eks"
-  cluster_name    = var.cluster_name
-  cluster_version = var.cluster_version
-  subnet_ids      = module.network.private_subnet_ids
-  vpc_id          = module.network.vpc_id
+  cluster_name    = "gros-michel-eks"
+  cluster_version = "1.32"
+  vpc_id          = module.vpc.vpc_id
+  subnet_ids      = module.vpc.private_subnets
 }
+
+
 
 module "nat_instance" {
   source           = "./modules/nat_instance"
@@ -71,3 +73,22 @@ resource "aws_route" "private_to_nat" {
   destination_cidr_block = "0.0.0.0/0"
   network_interface_id   = module.nat_instance.nat_instance_eni_id
 }
+
+module "eks_nodes" {
+  source          = "./modules/nodes"
+  cluster_name    = module.eks.cluster_name
+  node_group_name = "gros-node-group"
+  node_role_arn   = aws_iam_role.eks_node_role.arn
+  subnet_ids      = [aws_subnet.public1.id, aws_subnet.public2.id]
+  desired_size    = 2
+  max_size        = 3
+  min_size        = 1
+  instance_types  = ["t3.medium"]
+  disk_size       = 20
+}
+
+module "iam" {
+  source       = "./modules/iam"
+  cluster_name = "gros-cluster"
+}
+

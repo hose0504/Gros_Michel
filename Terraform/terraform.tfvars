@@ -1,6 +1,5 @@
-aws_region     = "ap-northeast-2"
-aws_access_key = "YOUR_ACCESS_KEY"
-aws_secret_key = "YOUR_SECRET_KEY"
+aws_region = "ap-northeast-2"
+
 
 vpc_name        = "global-vpc"
 vpc_cidr_block  = "10.0.0.0/16"
