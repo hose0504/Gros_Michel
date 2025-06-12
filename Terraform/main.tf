@@ -5,6 +5,7 @@ module "network" {
   public_subnets  = var.public_subnets
   private_subnets = var.private_subnets
   azs             = var.azs
+  domain_name     = var.domain_name # ← 이거 추가
 }
 
 module "storage" {
@@ -74,3 +75,13 @@ resource "aws_route" "private_to_nat" {
   network_interface_id   = module.nat_instance.nat_instance_eni_id
 }
 
+module "vpc" {
+  source = "./modules/network"
+
+  vpc_name        = var.vpc_name
+  vpc_cidr_block  = var.vpc_cidr_block
+  public_subnets  = var.public_subnets
+  private_subnets = var.private_subnets
+  azs             = var.azs
+  domain_name     = var.domain_name
+}
