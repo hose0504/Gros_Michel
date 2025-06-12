@@ -14,4 +14,8 @@ new
 new_yong
 plz
 new
+<<<<<<< HEAD
 lets go
+=======
+new
+>>>>>>> 7e1821fffbd8c9abaa686b0c98a219f070a010dd
