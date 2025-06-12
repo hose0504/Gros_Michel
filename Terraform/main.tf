@@ -74,21 +74,3 @@ resource "aws_route" "private_to_nat" {
   network_interface_id   = module.nat_instance.nat_instance_eni_id
 }
 
-module "eks_nodes" {
-  source          = "./modules/nodes"
-  cluster_name    = module.eks.cluster_name
-  node_group_name = "gros-node-group"
-  node_role_arn   = aws_iam_role.eks_node_role.arn
-  subnet_ids      = [aws_subnet.public1.id, aws_subnet.public2.id]
-  desired_size    = 2
-  max_size        = 3
-  min_size        = 1
-  instance_types  = ["t3.medium"]
-  disk_size       = 20
-}
-
-module "iam" {
-  source       = "./modules/iam"
-  cluster_name = "gros-cluster"
-}
-
