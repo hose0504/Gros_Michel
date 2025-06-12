@@ -56,8 +56,8 @@ module "eks" {
   source          = "./modules/eks"
   cluster_name    = "gros-michel-eks"
   cluster_version = "1.32"
-  vpc_id          = module.vpc.vpc_id
-  subnet_ids      = module.vpc.private_subnets
+  vpc_id          = module.network.vpc_id
+  subnet_ids      = module.network.private_subnets
 }
 
 
@@ -75,13 +75,13 @@ resource "aws_route" "private_to_nat" {
   network_interface_id   = module.nat_instance.nat_instance_eni_id
 }
 
-module "vpc" {
-  source = "./modules/network"
+# module "vpc" {
+#   source = "./modules/network"
 
-  vpc_name        = var.vpc_name
-  vpc_cidr_block  = var.vpc_cidr_block
-  public_subnets  = var.public_subnets
-  private_subnets = var.private_subnets
-  azs             = var.azs
-  domain_name     = var.domain_name
-}
+#   vpc_name        = var.vpc_name
+#   vpc_cidr_block  = var.vpc_cidr_block
+#   public_subnets  = var.public_subnets
+#   private_subnets = var.private_subnets
+#   azs             = var.azs
+#   domain_name     = var.domain_name
+# }
