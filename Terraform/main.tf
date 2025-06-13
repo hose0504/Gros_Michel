@@ -17,17 +17,40 @@ module "cdn" {
   origin_domain_name = module.storage.bucket_domain
 }
 
+# ✅ ALB (지리적 라우팅 대상)
+resource "aws_lb" "this" {
+  name               = "grosmichel-alb"
+  internal           = false
+  load_balancer_type = "application"
+  subnets            = module.network.public_subnet_ids
+
+  enable_deletion_protection = false
+
+  tags = {
+    Name = "grosmichel-alb"
+  }
+}
+
+# ✅ DNS 모듈 - ALB에 연결된 지리적 라우팅
 module "dns" {
-  source      = "./modules/dns"
-  domain_name = var.domain_name
+  source        = "./modules/dns"
+  domain_name   = var.domain_name
+
+  alb_dns_name  = aws_lb.this.dns_name
+  alb_zone_id   = aws_lb.this.zone_id
 
   regions = [
     {
-      name        = "seoul"
-      aws_region  = "ap-northeast-2"
-      cdn_domain  = module.cdn.cdn_domain_name
-      cdn_zone_id = module.cdn.cdn_hosted_zone_id
-      location    = "KR"  # ISO 국가 코드 (지리적 라우팅용)
+      name     = "korea"
+      location = "KR"
+    },
+    {
+      name     = "japan"
+      location = "JP"
+    },
+    {
+      name     = "fallback"
+      location = "default"
     }
   ]
 }
