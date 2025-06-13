@@ -27,6 +27,7 @@ module "dns" {
       aws_region  = "ap-northeast-2"
       cdn_domain  = module.cdn.cdn_domain_name
       cdn_zone_id = module.cdn.cdn_hosted_zone_id
+      location    = "KR"  # ISO 국가 코드 (지리적 라우팅용)
     }
   ]
 }
