@@ -10,6 +10,7 @@ variable "regions" {
     aws_region  = string # AWS 리전 코드 (예: ap-northeast-2)
     cdn_domain  = string # CloudFront 도메인 이름 (예: abc.cloudfront.net)
     cdn_zone_id = string # CloudFront hosted zone ID
+    location    = string
   }))
 }
 
