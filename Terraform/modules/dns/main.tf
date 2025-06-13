@@ -10,11 +10,11 @@ resource "aws_route53_record" "root_geo" {
   type            = "A"
   set_identifier  = "root-${var.regions[count.index].name}"
 
-  alias {
-    name                   = aws_lb.this.dns_name
-    zone_id                = aws_lb.this.zone_id
-    evaluate_target_health = false
-  }
+alias {
+  name    = var.alb_dns_name          
+  zone_id = var.alb_zone_id           
+  evaluate_target_health = false
+}
 
   geolocation_routing_policy {
     country = var.regions[count.index].location  # 예: "KR", "US", "JP", "default"
@@ -29,11 +29,11 @@ resource "aws_route53_record" "www_geo" {
   type            = "A"
   set_identifier  = "www-${var.regions[count.index].name}"
 
-  alias {
-    name                   = aws_lb.this.dns_name
-    zone_id                = aws_lb.this.zone_id
-    evaluate_target_health = false
-  }
+alias {
+  name    = var.alb_dns_name          
+  zone_id = var.alb_zone_id           
+  evaluate_target_health = false
+}
 
   geolocation_routing_policy {
     country = var.regions[count.index].location
