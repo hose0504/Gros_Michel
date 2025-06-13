@@ -13,3 +13,12 @@ variable "regions" {
   }))
 }
 
+variable "alb_dns_name" {
+  description = "Application Load Balancer DNS 이름"
+  type        = string
+}
+
+variable "alb_zone_id" {
+  description = "Application Load Balancer Zone ID"
+  type        = string
+}
