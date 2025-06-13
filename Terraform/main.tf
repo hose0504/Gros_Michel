@@ -41,16 +41,11 @@ module "dns" {
 
   regions = [
     {
-      name     = "korea"
-      location = "KR"
-    },
-    {
-      name     = "japan"
-      location = "JP"
-    },
-    {
-      name     = "fallback"
-      location = "default"
+      name        = "korea"
+      aws_region  = "ap-northeast-2"
+      cdn_domain  = ""           # ✅ 사용하지 않으므로 빈 문자열
+      cdn_zone_id = ""           # ✅ 사용하지 않으므로 빈 문자열
+      location    = "KR"         # ISO 국가코드
     }
   ]
 }
