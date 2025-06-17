@@ -63,7 +63,7 @@ module "web_ec2" {
   source           = "./modules/ec2"
   instance_name    = "web-ec2"
   ami_id           = "ami-0e967ff96936c0c0c"
-  instance_type    = "t2.micro"
+  instance_type    = "t3.small"
   key_name         = "key1"
   allow_all_access = true
 
