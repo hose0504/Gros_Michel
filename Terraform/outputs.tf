@@ -42,3 +42,8 @@ output "web_tg_arn" {
   description = "ALB Target Group ARN for Kubernetes binding"
   value       = aws_lb_target_group.web_tg.arn
 }
+
+output "alb_dns_name" {
+  description = "ALB DNS Name"
+  value       = aws_lb.this.dns_name
+}

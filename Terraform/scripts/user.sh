@@ -78,3 +78,36 @@ systemctl enable tomcat
 # -----------------------
 systemctl status tomcat
 kubectl version --client
+
+#!/bin/bash
+set -e
+
+# 필수 패키지 설치
+yum update -y
+yum install -y curl unzip bash-completion jq gettext git
+
+# eksctl 설치
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+mv /tmp/eksctl /usr/local/bin
+chmod +x /usr/local/bin/eksctl
+
+# Helm 3 설치
+curl -sSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# AWS CLI v2 설치 (Amazon Linux 2에서 기본 설치 안 돼 있는 경우)
+if ! command -v aws &> /dev/null; then
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  ./aws/install
+fi
+
+# kubectl 확인 (Amazon Linux 2에는 기본 설치됨, 없으면 설치)
+if ! command -v kubectl &> /dev/null; then
+  curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.29.0/2024-05-31/bin/linux/amd64/kubectl
+  chmod +x ./kubectl
+  mv ./kubectl /usr/local/bin
+fi
+
+# Helm repo 추가 및 업데이트
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update
