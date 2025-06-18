@@ -122,9 +122,9 @@ resource "aws_lb_listener" "web_listener" {
 }
 
 # EKS 노드 EC2 인스턴스를 Target으로 연결
-resource "aws_lb_target_group_attachment" "eks_nodes" {
-  count            = length(module.eks.node_instance_ids)
-  target_group_arn = aws_lb_target_group.web_tg.arn
-  target_id        = module.eks.node_instance_ids[count.index]
-  port             = 30080
-}
+# resource "aws_lb_target_group_attachment" "eks_nodes" {
+#   count            = length(module.eks.node_instance_ids)
+#   target_group_arn = aws_lb_target_group.web_tg.arn
+#   target_id        = module.eks.node_instance_ids[count.index]
+#   port             = 30080
+# }
