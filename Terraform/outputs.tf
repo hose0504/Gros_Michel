@@ -37,3 +37,8 @@ output "web_ec2_public_ip" {
 output "alb_dns_name" {
   value = aws_lb.this.dns_name
 }
+
+output "web_tg_arn" {
+  description = "ALB Target Group ARN for Kubernetes binding"
+  value       = aws_lb_target_group.web_tg.arn
+}
