@@ -91,3 +91,54 @@ resource "aws_route" "private_to_nat" {
   destination_cidr_block = "0.0.0.0/0"
   network_interface_id   = module.nat_instance.nat_instance_eni_id
 }
+
+# ALB 생성
+resource "aws_lb" "this" {
+  name               = "grosmichel-alb"
+  internal           = false
+  load_balancer_type = "application"
+  subnets            = module.network.public_subnet_ids
+
+  enable_deletion_protection = false
+
+  tags = {
+    Name = "grosmichel-alb"
+  }
+}
+
+# Target Group
+resource "aws_lb_target_group" "web_tg" {
+  name        = "web-tg"
+  port        = 30080
+  protocol    = "HTTP"
+  target_type = "instance"
+  vpc_id      = module.network.vpc_id
+
+  health_check {
+    path                = "/"
+    interval            = 30
+    protocol            = "HTTP"
+    healthy_threshold   = 3
+    unhealthy_threshold = 3
+  }
+}
+
+# ALB Listener
+resource "aws_lb_listener" "web_listener" {
+  load_balancer_arn = aws_lb.this.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.web_tg.arn
+  }
+}
+
+# EKS 노드 EC2 인스턴스를 Target으로 연결
+resource "aws_lb_target_group_attachment" "eks_nodes" {
+  count            = length(module.eks.node_instance_ids)
+  target_group_arn = aws_lb_target_group.web_tg.arn
+  target_id        = module.eks.node_instance_ids[count.index]
+  port             = 30080
+}
