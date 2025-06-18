@@ -109,25 +109,25 @@ resource "aws_lb_target_group" "web_tg" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "eks_nodes" {
-  count            = length(module.eks.node_instance_ids)
-  target_group_arn = aws_lb_target_group.web_tg.arn
-  target_id        = module.eks.node_instance_ids[count.index]
-  port             = 30080
-}
+# resource "aws_lb_target_group_attachment" "eks_nodes" {
+#   count            = length(module.eks.node_instance_ids)
+#   target_group_arn = aws_lb_target_group.web_tg.arn
+#   target_id        = module.eks.node_instance_ids[count.index]
+#   port             = 30080
+# }
 
 
-# ALB Listener
-resource "aws_lb_listener" "web_listener" {
-  load_balancer_arn = aws_lb.this.arn
-  port              = 80
-  protocol          = "HTTP"
+# # ALB Listener
+# resource "aws_lb_listener" "web_listener" {
+#   load_balancer_arn = aws_lb.this.arn
+#   port              = 80
+#   protocol          = "HTTP"
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.web_tg.arn
-  }
-}
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.web_tg.arn
+#   }
+# }
 
 # EKS 노드 EC2 인스턴스를 Target으로 연결
 # resource "aws_lb_target_group_attachment" "eks_nodes" {
