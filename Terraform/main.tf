@@ -92,20 +92,6 @@ resource "aws_route" "private_to_nat" {
   network_interface_id   = module.nat_instance.nat_instance_eni_id
 }
 
-# ALB 생성
-resource "aws_lb" "this" {
-  name               = "grosmichel-alb"
-  internal           = false
-  load_balancer_type = "application"
-  subnets            = module.network.public_subnet_ids
-
-  enable_deletion_protection = false
-
-  tags = {
-    Name = "grosmichel-alb"
-  }
-}
-
 # Target Group
 resource "aws_lb_target_group" "web_tg" {
   name        = "web-tg"
