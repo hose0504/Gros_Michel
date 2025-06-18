@@ -97,7 +97,7 @@ resource "aws_lb_target_group" "web_tg" {
   name        = "web-tg"
   port        = 30080
   protocol    = "HTTP"
-  target_type = "instance"
+  target_type = "ip"
   vpc_id      = module.network.vpc_id
 
   health_check {
