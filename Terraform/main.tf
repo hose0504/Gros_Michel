@@ -109,6 +109,14 @@ resource "aws_lb_target_group" "web_tg" {
   }
 }
 
+resource "aws_lb_target_group_attachment" "eks_nodes" {
+  count            = length(module.eks.node_instance_ids)
+  target_group_arn = aws_lb_target_group.web_tg.arn
+  target_id        = module.eks.node_instance_ids[count.index]
+  port             = 30080
+}
+
+
 # ALB Listener
 resource "aws_lb_listener" "web_listener" {
   load_balancer_arn = aws_lb.this.arn
