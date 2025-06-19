@@ -31,4 +31,16 @@ variable "cluster_version" {
   default     = "1.29"
 }
 
+variable "origin_domain_name" {
+  type = string
+}
+
+variable "bucket_name" {
+  type = string
+}
+
+variable "environment" {
+  type = string
+}
+
 

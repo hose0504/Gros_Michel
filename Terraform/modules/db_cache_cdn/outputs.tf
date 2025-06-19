@@ -3,5 +3,5 @@ output "cloudfront_domain_name" {
 }
 
 output "s3_bucket_name" {
-  value = aws_s3_bucket.shared.bucket
+  value = var.bucket_name
 }

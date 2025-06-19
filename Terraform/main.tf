@@ -10,7 +10,7 @@ module "network" {
 
 module "storage" {
   source      = "./modules/storage"
-  environment = "prod"
+  environment = var.environment
 }
 
 module "cdn" {
@@ -44,8 +44,9 @@ module "dns" {
 
 module "db_cache_cdn" {
   source             = "./modules/db_cache_cdn"
-  origin_domain_name = module.storage.bucket_domain_name
-  environment        = "prod"
+  origin_domain_name = module.storage.bucket_domain
+  bucket_name        = module.storage.bucket_name
+  environment        = var.environment
 }
 
 
