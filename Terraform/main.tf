@@ -40,6 +40,11 @@ module "dns" {
   cloudfront_domain_name = module.db_cache_cdn.cloudfront_domain_name
 }
 
+module "db_cache_cdn" {
+  source      = "./modules/db_cache_cdn"
+  environment = "prod"
+}
+
 
 terraform {
   backend "s3" {
