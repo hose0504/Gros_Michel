@@ -1,3 +1,11 @@
+resource "aws_cloudfront_origin_access_control" "oac" {
+  name                              = "cdn-oac"
+  description                       = "Origin Access Control for CloudFront to S3"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
 resource "aws_cloudfront_distribution" "this" {
   origin {
     domain_name = var.origin_domain_name # 예: bucket-name.s3.ap-northeast-2.amazonaws.com
