@@ -2,6 +2,7 @@ output "cloudfront_domain_name" {
   value = aws_cloudfront_distribution.cdn.domain_name
 }
 
-output "s3_bucket_name" {
-  value = var.bucket_name
+variable "bucket_name" {
+  description = "Shared S3 bucket name used by CloudFront"
+  type        = string
 }

@@ -41,13 +41,13 @@ module "dns" {
   cloudfront_domain_name = module.db_cache_cdn.cloudfront_domain_name
 }
 
-
 module "db_cache_cdn" {
-  source             = "./modules/db_cache_cdn"
-  origin_domain_name = module.storage.bucket_domain
-  bucket_name        = module.storage.bucket_name 
-  environment        = var.environment
+  source              = "./modules/db_cache_cdn"
+  origin_domain_name  = module.storage.bucket_domain_name
+  bucket_name        = module.storage.bucket_name
+  environment         = var.environment
 }
+
 
 
 terraform {

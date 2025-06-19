@@ -7,7 +7,7 @@ variable "environment" {
   type = string
 }
 
-variable "bucket_name" {
-  description = "The name of the shared S3 bucket"
-  type        = string
-}
+# variable "bucket_name" {
+#   description = "The name of the shared S3 bucket"
+#   type        = string
+# }
