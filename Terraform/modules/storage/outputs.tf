@@ -10,7 +10,7 @@ output "bucket_arn" {
   value = aws_s3_bucket.shared.arn
 }
 
-output "bucket_domain" {
+output "bucket_domain_name" {
   value = aws_s3_bucket.shared.bucket_regional_domain_name
 }
 
