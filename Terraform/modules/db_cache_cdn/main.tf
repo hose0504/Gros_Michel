@@ -41,13 +41,13 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 
   default_cache_behavior {
-    allowed_methods        = ["GET", "HEAD"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "db-cache-origin"
-    viewer_protocol_policy = "redirect-to-https"
-    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+    allowed_methods          = ["GET", "HEAD"]
+    cached_methods           = ["GET", "HEAD"]
+    target_origin_id         = "db-cache-origin"
+    viewer_protocol_policy   = "redirect-to-https"
+    cache_policy_id          = "658327ea-f89d-4fab-a63d-7e88639e58f6"
     origin_request_policy_id = "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf"
-    compress               = true
+    compress                 = true
   }
 
   price_class = "PriceClass_100"
@@ -76,12 +76,12 @@ resource "aws_s3_bucket_policy" "allow_cf" {
     Statement = [
       {
         Sid       = "AllowCloudFrontOAC",
-        Effect = "Allow",
+        Effect    = "Allow",
         Principal = {
           Service = "cloudfront.amazonaws.com"
         },
-        Action = "s3:GetObject",
-        Resource = "${aws_s3_bucket.db_cache.arn}/*",
+        Action    = "s3:GetObject",
+        Resource  = "${aws_s3_bucket.db_cache.arn}/*",
         Condition = {
           StringEquals = {
             "AWS:SourceArn" = aws_cloudfront_distribution.cdn.arn
