@@ -1,7 +1,3 @@
-output "bucket_name" {
-  value = aws_s3_bucket.db_cache.id
-}
-
 output "bucket_domain_name" {
   value = aws_s3_bucket.shared.bucket_regional_domain_name
 }
