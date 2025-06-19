@@ -3,7 +3,7 @@ output "bucket_domain_name" {
 }
 
 output "bucket_zone_id" {
-  value = aws_s3_bucket.db_cache.hosted_zone_id
+  value = aws_s3_bucket.shared
 }
 
 output "bucket_arn" {
