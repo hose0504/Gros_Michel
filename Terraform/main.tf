@@ -9,7 +9,8 @@ module "network" {
 }
 
 module "storage" {
-  source = "./modules/storage"
+  source      = "./modules/storage"
+  environment = "prod"
 }
 
 module "cdn" {
@@ -40,9 +41,11 @@ module "dns" {
   cloudfront_domain_name = module.db_cache_cdn.cloudfront_domain_name
 }
 
+
 module "db_cache_cdn" {
-  source      = "./modules/db_cache_cdn"
-  environment = "prod"
+  source             = "./modules/db_cache_cdn"
+  origin_domain_name = module.storage.bucket_domain_name
+  environment        = "prod"
 }
 
 

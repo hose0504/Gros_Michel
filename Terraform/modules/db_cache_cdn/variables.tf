@@ -1,5 +1,8 @@
-variable "environment" {
-  description = "Environment name (e.g., prod)"
+variable "origin_domain_name" {
+  description = "Shared S3 bucket domain name"
   type        = string
-  default     = "prod"
+}
+
+variable "environment" {
+  type = string
 }
