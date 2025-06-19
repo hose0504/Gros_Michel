@@ -109,6 +109,16 @@ resource "aws_lb_target_group" "web_tg" {
   }
 }
 
+module "db_cache_cdn" {
+  source      = "./modules/db_cache_cdn"
+  environment = "prod"
+}
+
+output "db_cache_url" {
+  value = "https://${module.db_cache_cdn.cloudfront_domain_name}/"
+}
+
+
 # resource "aws_lb_target_group_attachment" "eks_nodes" {
 #   count            = length(module.eks.node_instance_ids)
 #   target_group_arn = aws_lb_target_group.web_tg.arn
