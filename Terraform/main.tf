@@ -35,20 +35,11 @@ resource "aws_lb" "this" {
 module "dns" {
   source        = "./modules/dns"
   domain_name   = var.domain_name
-
   alb_dns_name  = aws_lb.this.dns_name
   alb_zone_id   = aws_lb.this.zone_id
-
-  regions = [
-    {
-      name        = "korea"
-      aws_region  = "ap-northeast-2"
-      cdn_domain  = ""           # ✅ 사용하지 않으므로 빈 문자열
-      cdn_zone_id = ""           # ✅ 사용하지 않으므로 빈 문자열
-      location    = "KR"         # ISO 국가코드
-    }
-  ]
+  cloudfront_domain_name = module.db_cache_cdn.cloudfront_domain_name
 }
+
 
 terraform {
   backend "s3" {
@@ -109,14 +100,6 @@ resource "aws_lb_target_group" "web_tg" {
   }
 }
 
-module "db_cache_cdn" {
-  source      = "./modules/db_cache_cdn"
-  environment = "prod"
-}
-
-output "db_cache_url" {
-  value = "https://${module.db_cache_cdn.cloudfront_domain_name}/"
-}
 
 
 # resource "aws_lb_target_group_attachment" "eks_nodes" {
