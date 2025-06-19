@@ -44,7 +44,7 @@ module "dns" {
 module "db_cache_cdn" {
   source              = "./modules/db_cache_cdn"
   origin_domain_name  = module.storage.bucket_domain_name
-  bucket_name        = module.storage.bucket_name
+  bucket_name         = module.storage.bucket_name
   environment         = var.environment
 }
 

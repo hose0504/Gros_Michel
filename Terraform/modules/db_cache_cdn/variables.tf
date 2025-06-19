@@ -4,7 +4,8 @@ variable "origin_domain_name" {
 }
 
 variable "environment" {
-  type = string
+  description = "Environment tag (e.g., dev, staging, prod)"
+  type        = string
 }
 
 # variable "bucket_name" {

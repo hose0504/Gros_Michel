@@ -41,6 +41,7 @@ variable "bucket_name" {
 
 variable "environment" {
   type = string
+  default   = "prod"
 }
 
 
