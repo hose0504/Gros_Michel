@@ -109,6 +109,12 @@ resource "aws_lb_target_group" "web_tg" {
   }
 }
 
+module "lambda_to_onprem" {
+  source         = "./modules/lambda_to_onprem"
+  region         = var.region
+  project_id     = var.project_id
+  onprem_api_url = var.onprem_api_url
+}
 
 
 # resource "aws_lb_target_group_attachment" "eks_nodes" {
