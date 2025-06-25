@@ -25,13 +25,14 @@ resource "aws_iam_policy_attachment" "lambda_basic" {
 }
 
 resource "aws_lambda_function" "cw_to_onprem" {
-  filename         = "${path.module}/test/lambda_function_payload.zip"
+  filename         = "${path.module}/lambda_function_payload.zip"
   function_name    = "cw-log-to-onprem"
   role             = aws_iam_role.lambda_role.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.9"
-  source_code_hash = filebase64sha256("${path.module}/test/lambda_function_payload.zip")
+  source_code_hash = filebase64sha256("${path.module}/lambda_function_payload.zip")
 }
+
 
 
 resource "aws_cloudwatch_log_subscription_filter" "to_lambda" {
