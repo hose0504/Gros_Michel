@@ -9,3 +9,7 @@ azs             = ["ap-northeast-2a", "ap-northeast-2c"]
 domain_name     = "grosmichel.click"
 origin_domain_name = "team5-db-cache.s3.ap-northeast-2.amazonaws.com"
 bucket_name          = "team5-db-cache"
+
+region = "ap-northeast-2"
+project_id = "team5-onprem-test"  # 예시값
+onprem_api_url = "http://192.168.100.10:8080/logs"
