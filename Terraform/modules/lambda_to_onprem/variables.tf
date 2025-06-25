@@ -3,3 +3,12 @@ variable "onprem_api_url" {
   default     = "http://192.168.100.10:8080/logs"
   description = "온프렘 수신 API URL"
 }
+# modules/lambda_to_onprem/variables.tf
+
+variable "region" {
+  type = string
+}
+
+variable "project_id" {
+  type = string
+}
