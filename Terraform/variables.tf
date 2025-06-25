@@ -45,3 +45,20 @@ variable "environment" {
 }
 
 
+# 루트 디렉토리의 variables.tf
+
+variable "region" {
+  description = "Region for AWS resources"
+  type        = string
+}
+
+variable "project_id" {
+  description = "Project identifier (사용 안 해도 명세 맞춰서)"
+  type        = string
+}
+
+variable "onprem_api_url" {
+  description = "URL for on-prem log receiver"
+  type        = string
+  default     = "http://192.168.100.10:8080/logs"
+}
