@@ -7,9 +7,17 @@ def lambda_handler(event, context):
     cw_data = json.loads(gzip.decompress(base64.b64decode(event['awslogs']['data'])))
     
     for log_event in cw_data['logEvents']:
+        # 로그 메시지를 추출
+        log_message = log_event.get("message", "")
         try:
-            requests.post("http://192.168.100.10:8080/logs", json=log_event, timeout=3)
+            # FastAPI가 기대하는 구조로 전송
+            response = requests.post(
+                "http://192.168.100.10:8000/logs",  # 포트 확인!
+                json={"log": log_message},
+                timeout=3
+            )
+            print(f"Sent log. Response: {response.status_code}")
         except Exception as e:
-            print(f"Failed to send log: {e}")
-            
+            print(f"❌ Failed to send log: {e}")
+
     return {'statusCode': 200}

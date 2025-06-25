@@ -40,5 +40,5 @@ resource "aws_cloudwatch_log_subscription_filter" "to_lambda" {
   log_group_name  = aws_cloudwatch_log_group.app_log.name
   filter_pattern  = "{ $.level = \"ERROR\" }"
   destination_arn = aws_lambda_function.cw_to_onprem.arn
-  role_arn        = aws_iam_role.lambda_role.arn
 }
+
