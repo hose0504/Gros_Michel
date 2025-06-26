@@ -12,10 +12,11 @@ def lambda_handler(event, context):
         try:
             # FastAPI가 기대하는 구조로 전송
             response = requests.post(
-                "http://192.168.100.10:8000/logs",  # 포트 확인!
-                json={"log": log_message},
-                timeout=3
+             "http://172.30.192.49:8000/logs",  # ✅ EC2의 프라이빗 IP
+             json={"log": log_message},
+             timeout=3
             )
+
             print(f"Sent log. Response: {response.status_code}")
         except Exception as e:
             print(f"❌ Failed to send log: {e}")
