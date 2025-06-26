@@ -24,14 +24,19 @@ resource "aws_iam_policy_attachment" "lambda_basic_exec_role" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-resource "aws_lambda_function" "cw_to_onprem" {
-  filename         = "${path.module}/lambda_function_payload.zip"
-  function_name    = "cw-log-to-onprem"
-  role             = aws_iam_role.lambda_role.arn
-  handler          = "lambda_function.lambda_handler"
-  runtime          = "python3.9"
-  source_code_hash = filebase64sha256("${path.module}/lambda_function_payload.zip")
+resource "aws_lambda_function" "log_forwarder" {
+  function_name = "lambda-to-onprem-logger"
+  role          = aws_iam_role.lambda_exec.arn
+  handler       = "lambda_function.lambda_handler"
+  runtime       = "python3.9"
+  
+  s3_bucket     = "team5-shared-storage-5bfcc8df"
+  s3_key        = "lambda/lambda_function_payload.zip"
+
+  timeout       = 5
+  memory_size   = 128
 }
+
 
 resource "aws_lambda_permission" "allow_cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"
