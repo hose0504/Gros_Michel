@@ -18,19 +18,19 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
-resource "aws_iam_policy_attachment" "lambda_basic" {
-  name       = "lambda-basic-attach"
+resource "aws_iam_policy_attachment" "lambda_basic_exec_role" {
+  name       = "lambda-basic-execution"
   roles      = [aws_iam_role.lambda_role.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 resource "aws_lambda_function" "cw_to_onprem" {
-  filename         = "${path.module}/lambda_function_payload.zip"
+  filename         = "${path.module}/../lambda_function_payload.zip"  # ⚠️ 상대경로 필요한 경우 수정
   function_name    = "cw-log-to-onprem"
   role             = aws_iam_role.lambda_role.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.9"
-  source_code_hash = filebase64sha256("${path.module}/lambda_function_payload.zip")
+  source_code_hash = filebase64sha256("${path.module}/../lambda_function_payload.zip")
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch" {
@@ -38,16 +38,17 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.cw_to_onprem.function_name
   principal     = "logs.ap-northeast-2.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_log_group.app_log.arn}:*"  # ✅ 꼭 * 붙이
+  source_arn    = "${aws_cloudwatch_log_group.app_log.arn}:*" # ✅ 로그 그룹 전체
 }
-
-
 
 resource "aws_cloudwatch_log_subscription_filter" "to_lambda" {
   name            = "log-to-lambda"
   log_group_name  = aws_cloudwatch_log_group.app_log.name
-  filter_pattern  = "{ $.level = \"ERROR\" }"
+  filter_pattern  = ""  # JSON 로그라면 { $.level = "ERROR" }
   destination_arn = aws_lambda_function.cw_to_onprem.arn
 
-  depends_on = [aws_lambda_permission.allow_cloudwatch]
+  depends_on = [
+    aws_lambda_function.cw_to_onprem,
+    aws_lambda_permission.allow_cloudwatch
+  ]
 }
