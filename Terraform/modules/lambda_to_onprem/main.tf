@@ -37,9 +37,10 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.cw_to_onprem.function_name
-  principal     = "logs.ap-northeast-2.amazonaws.com"  
-  source_arn    = aws_cloudwatch_log_group.app_log.arn
+  principal     = "logs.ap-northeast-2.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_log_group.app_log.arn}:*"  # ✅ 꼭 * 붙이기
 }
+
 
 
 resource "aws_cloudwatch_log_subscription_filter" "to_lambda" {
