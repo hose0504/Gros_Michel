@@ -111,3 +111,29 @@ fi
 # Helm repo 추가 및 업데이트
 helm repo add eks https://aws.github.io/eks-charts
 helm repo update
+
+#!/bin/bash
+set -e
+
+# Python 환경 구성
+yum update -y
+yum install -y python3 python3-pip
+
+# FastAPI 및 Uvicorn 설치
+pip3 install fastapi uvicorn
+
+# FastAPI 수신기 코드 작성
+cat <<EOF > /home/ec2-user/receive_logs.py
+from fastapi import FastAPI, Request
+
+app = FastAPI()
+
+@app.post("/receive-log")
+async def receive_log(request: Request):
+    data = await request.json()
+    print("✅ 받은 로그:", data)
+    return {"status": "ok"}
+EOF
+
+# FastAPI 자동 실행 (nohup 백그라운드)
+nohup uvicorn receive_logs:app --host 0.0.0.0 --port 8000 &
