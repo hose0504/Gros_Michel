@@ -37,9 +37,10 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.cw_to_onprem.function_name
-  principal     = "logs.ap-northeast-2.amazonaws.com" # 리전 확인 필요 시 var.region 사용 가능
+  principal     = "logs.ap-northeast-2.amazonaws.com"  # ✅ 한국 리전
   source_arn    = aws_cloudwatch_log_group.app_log.arn
 }
+
 
 resource "aws_cloudwatch_log_subscription_filter" "to_lambda" {
   name            = "log-to-lambda"
