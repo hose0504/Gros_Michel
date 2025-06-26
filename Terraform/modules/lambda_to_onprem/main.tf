@@ -52,3 +52,4 @@ resource "aws_cloudwatch_log_subscription_filter" "to_lambda" {
     aws_lambda_permission.allow_cloudwatch
   ]
 }
+
