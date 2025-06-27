@@ -114,7 +114,7 @@ module "lambda_to_onprem" {
 
   lambda_zip_path        = var.lambda_zip_path
   s3_code_bucket_name    = var.s3_code_bucket_name
-  s3_bucket              = var.s3_bucket
+  s3_bucket = "aws-monitor-code-bucket-123456789012"  # var.s3_bucket 말고 실제 리소스 참조
   s3_key                 = var.s3_key
   onprem_api_url         = var.onprem_api_url
 }
