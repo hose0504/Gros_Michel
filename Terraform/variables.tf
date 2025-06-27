@@ -72,3 +72,9 @@ variable "s3_key" {
   description = "S3 key of the Lambda zip"
   type        = string
 }
+
+variable "s3_code_bucket_name" {
+  description = "S3 bucket for Lambda deployment code"
+  type        = string
+  default     = "aws-monitor-code-bucket"
+}
