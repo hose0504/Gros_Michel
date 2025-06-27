@@ -66,6 +66,7 @@ resource "aws_s3_bucket_policy" "code_bucket_policy" {
 }
 
 
+
 # Lambda: CloudWatch to S3 export
 resource "aws_lambda_function" "log_export_lambda" {
   function_name    = "cloudwatch-to-s3-exporter"
