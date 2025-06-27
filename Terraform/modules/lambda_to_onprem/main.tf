@@ -1,31 +1,57 @@
-# Declare caller identity
+# 현재 계정 정보 조회
 data "aws_caller_identity" "current" {}
 
-# Create the S3 bucket for log export
-resource "aws_s3_bucket" "log_export" {
-  bucket        = "aws-monitor-error"
-  force_destroy = true
+# Lambda가 코드를 가져올 S3 버킷
+variable "s3_code_bucket_name" {
+  default = "aws-monitor-code-bucket"
 }
 
-# Allow CloudWatch Logs service to put logs in the bucket
+# Lambda가 참조할 ZIP 경로
+variable "s3_key" {
+  default = "export_lambda_payload.zip"
+}
+
+# Lambda 실행에 사용할 IAM Role
+resource "aws_iam_role" "lambda_role" {
+  name = "lambda-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+# 버킷 정책: Lambda가 ZIP 파일 다운로드할 수 있도록 허용
 resource "aws_s3_bucket_policy" "allow_lambda_get_code" {
-  bucket = var.s3_bucket
+  bucket = var.s3_code_bucket_name
 
   policy = jsonencode({
     Version = "2012-10-17",
-    Statement = [
+    Statement: [
       {
-        Sid: "AllowLambdaGetObject",
-        Effect: "Allow",
-        Principal: {
-          Service: "lambda.amazonaws.com"
+        Sid       = "AllowLambdaToGetObject",
+        Effect    = "Allow",
+        Principal = {
+          Service = "lambda.amazonaws.com"
         },
-        Action: "s3:GetObject",
-        Resource: "arn:aws:s3:::${var.s3_bucket}/${var.s3_key}"
+        Action    = "s3:GetObject",
+        Resource  = "arn:aws:s3:::${var.s3_code_bucket_name}/*",
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = data.aws_caller_identity.current.account_id
+          }
+        }
       }
     ]
   })
 }
+
 
 
 
