@@ -1,3 +1,7 @@
+###########################################
+# variables.tf
+###########################################
+
 variable "region" {
   description = "AWS Region to deploy resources"
   type        = string
@@ -20,4 +24,4 @@ variable "onprem_api_url" {
   description = "URL of the on-premises server to POST logs to"
   type        = string
   default     = "http://your-onprem-server/log"
-}
+} 

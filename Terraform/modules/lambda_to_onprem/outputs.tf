@@ -1,3 +1,7 @@
+###########################################
+# outputs.tf
+###########################################
+
 output "s3_bucket_name" {
   description = "The name of the S3 bucket for CloudWatch log export"
   value       = aws_s3_bucket.log_export.id
