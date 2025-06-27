@@ -1,37 +1,23 @@
 variable "region" {
-  description = "AWS region"
+  description = "AWS Region to deploy resources"
   type        = string
   default     = "ap-northeast-2"
 }
 
-variable "log_group_name" {
-  description = "CloudWatch Log Group name"
-  type        = string
-  default     = "/aws/lambda/app-error"
-}
-
-variable "lambda_function_name" {
-  description = "Lambda function name"
-  type        = string
-  default     = "lambda-to-onprem-logger"
-}
-
 variable "s3_bucket" {
-  description = "S3 bucket that contains the Lambda function payload"
+  description = "S3 bucket where Lambda zip is stored"
   type        = string
+  default     = "aws-monitor-code-bucket"
 }
 
 variable "s3_key" {
-  description = "S3 key (path) to the Lambda function .zip file"
+  description = "Lambda deployment package zip file key"
   type        = string
+  default     = "lambda_function_payload.zip"
 }
-
 
 variable "onprem_api_url" {
-  description = "The endpoint for the on-premise log receiver"
+  description = "URL of the on-premises server to POST logs to"
   type        = string
+  default     = "http://your-onprem-server/log"
 }
-
-
-
-
