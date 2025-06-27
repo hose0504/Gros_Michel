@@ -48,7 +48,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
 
 # 버킷 정책: Lambda가 S3에서 ZIP을 읽을 수 있도록 허용
 resource "aws_s3_bucket_policy" "allow_lambda_get_code" {
-  bucket = var.s3_code_bucket_name
+  bucket = var.s3_bucket
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -60,7 +60,7 @@ resource "aws_s3_bucket_policy" "allow_lambda_get_code" {
           Service = "lambda.amazonaws.com"
         },
         Action    = "s3:GetObject",
-        Resource  = "arn:aws:s3:::${var.s3_code_bucket_name}/*",
+        Resource  = "arn:aws:s3:::${var.s3_bucket}/*",
         Condition = {
           StringEquals = {
             "aws:SourceAccount" = data.aws_caller_identity.current.account_id
@@ -70,7 +70,6 @@ resource "aws_s3_bucket_policy" "allow_lambda_get_code" {
     ]
   })
 }
-
 
 # 로그 저장용 S3 버킷 생성
 resource "aws_s3_bucket" "log_export" {
@@ -84,7 +83,7 @@ resource "aws_lambda_function" "log_export_lambda" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "export_lambda_function.lambda_handler"
   runtime          = "python3.9"
-  bucket = var.s3_bucket
+  s3_bucket        = var.s3_bucket
   s3_key           = var.s3_key
   source_code_hash = filebase64sha256("${path.module}/../lambda_function_payload.zip")
 
