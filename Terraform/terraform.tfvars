@@ -15,10 +15,9 @@ project_id = "team5-onprem-test"  # 예시값
 onprem_api_url = "http://172.30.192.49:8000/logs"
 
 s3_bucket = "aws-monitor-error-"
-s3_key = "export_lambda_payload.zip"
-
+s3_key              = "lambda_function_payload.zip"
 
 lambda_zip_path        = "./modules/lambda_to_onprem/lambda_function_payload.zip"
-s3_code_bucket_name = "aws-monitor-code-bucket-123456789012"
+s3_code_bucket_name = "your-code-bucket-207567785497"
 
 
