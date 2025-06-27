@@ -1,146 +1,150 @@
-data "aws_caller_identity" "current" {}
-
-# Lambda Role
-resource "aws_iam_role" "lambda_role" {
-  name = "lambda-execution-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Effect = "Allow",
-      Principal = { Service = "lambda.amazonaws.com" },
-      Action    = "sts:AssumeRole"
-    }]
-  })
+module "network" {
+  source          = "./modules/network"
+  vpc_name        = var.vpc_name
+  vpc_cidr_block  = var.vpc_cidr_block
+  public_subnets  = var.public_subnets
+  private_subnets = var.private_subnets
+  azs             = var.azs
+  domain_name     = var.domain_name # ← 이거 추가
 }
 
-# 로그 저장용 S3 버킷
-resource "aws_s3_bucket" "log_export" {
-  bucket        = "aws-monitor-error"
-  force_destroy = true
+module "storage" {
+  source      = "./modules/storage"
+  environment = var.environment
 }
 
-# Lambda가 log_export 버킷 객체 접근 허용
-resource "aws_s3_bucket_policy" "log_export_policy" {
-  bucket = aws_s3_bucket.log_export.id
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Sid      = "AllowLambdaGetObjectFromSameAccount",
-        Effect   = "Allow",
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        },
-        Action   = "s3:GetObject",
-        Resource = "arn:aws:s3:::${aws_s3_bucket.log_export.bucket}/*",
-        Condition = {
-          StringEquals = {
-            "aws:SourceAccount" = data.aws_caller_identity.current.account_id
-          }
-        }
-      }
-    ]
-  })
+module "cdn" {
+  source             = "./modules/cdn"
+  origin_domain_name = module.storage.bucket_domain
 }
 
-# Lambda 코드용 S3 버킷 정책
-resource "aws_s3_bucket_policy" "code_bucket_policy" {
-  bucket = var.s3_code_bucket_name
+# ✅ ALB (지리적 라우팅 대상)
+resource "aws_lb" "this" {
+  name               = "grosmichel-alb"
+  internal           = false
+  load_balancer_type = "application"
+  subnets            = module.network.public_subnet_ids
 
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Sid      = "AllowLambdaToGetCode",
-        Effect   = "Allow",
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        },
-        Action   = "s3:GetObject",
-        Resource = "arn:aws:s3:::${var.s3_code_bucket_name}/*"
-      }
-    ]
-  })
-}
+  enable_deletion_protection = false
 
-# Lambda: CloudWatch to S3 export
-resource "aws_lambda_function" "log_export_lambda" {
-  function_name    = "cloudwatch-to-s3-exporter"
-  role             = aws_iam_role.lambda_role.arn
-  handler          = "export_lambda_function.lambda_handler"
-  runtime          = "python3.9"
-  s3_bucket        = var.s3_bucket
-  s3_key           = var.s3_key
-  source_code_hash = filebase64sha256("${path.module}/../lambda_function_payload.zip")
-
-  timeout = 60
-
-  environment {
-    variables = {
-      LOG_GROUP_NAME = "/aws/lambda/app-error"
-      S3_BUCKET      = aws_s3_bucket.log_export.bucket
-    }
+  tags = {
+    Name = "grosmichel-alb"
   }
 }
 
-# Lambda: S3 to on-prem forwarder
-resource "aws_lambda_function" "s3_log_forwarder" {
-  function_name    = "s3-log-to-onprem"
-  role             = aws_iam_role.lambda_role.arn
-  handler          = "lambda_function.lambda_handler"
-  runtime          = "python3.9"
-  s3_bucket        = var.s3_bucket
-  s3_key           = var.s3_key
-  source_code_hash = filebase64sha256("${path.module}/lambda_function_payload.zip")
+# ✅ DNS 모듈 - ALB에 연결된 지리적 라우팅
+module "dns" {
+  source        = "./modules/dns"
+  domain_name   = var.domain_name
+  alb_dns_name  = aws_lb.this.dns_name
+  alb_zone_id   = aws_lb.this.zone_id
+  cloudfront_domain_name = module.db_cache_cdn.cloudfront_domain_name
+}
 
-  timeout     = 10
-  memory_size = 128
+module "db_cache_cdn" {
+  source              = "./modules/db_cache_cdn"
+  origin_domain_name  = module.storage.bucket_domain_name
+  bucket_name         = module.storage.bucket_name
+  environment         = var.environment
+}
 
-  environment {
-    variables = {
-      ONPREM_API_URL = var.onprem_api_url
-    }
+
+
+terraform {
+  backend "s3" {
+    bucket  = "grosmichel-terraform-state"
+    key     = "global/terraform.tfstate"
+    region  = "ap-northeast-2"
+    encrypt = true
   }
 }
 
-# Lambda Permission: allow S3 to trigger
-resource "aws_lambda_permission" "allow_s3" {
-  statement_id  = "AllowExecutionFromS3"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.s3_log_forwarder.function_name
-  principal     = "s3.amazonaws.com"
-  source_arn    = aws_s3_bucket.log_export.arn
+module "web_ec2" {
+  source           = "./modules/ec2"
+  instance_name    = "web-ec2"
+  ami_id           = "ami-0e967ff96936c0c0c"
+  instance_type    = "t3.small"
+  key_name         = "key1"
+  allow_all_access = true
+
+  subnet_id = module.network.public_subnet_ids[0] # ✅ 여기 주의
+  vpc_id    = module.network.vpc_id
 }
 
-# S3 이벤트 → Lambda 연결
-resource "aws_s3_bucket_notification" "notify_lambda" {
-  bucket = aws_s3_bucket.log_export.id
+module "eks" {
+  source          = "./modules/eks"
+  cluster_name    = "gros-michel-eks"
+  cluster_version = "1.32"
+  vpc_id          = module.network.vpc_id
+  subnet_ids      = module.network.private_subnets
+}
 
-  lambda_function {
-    lambda_function_arn = aws_lambda_function.s3_log_forwarder.arn
-    events              = ["s3:ObjectCreated:*"]
+module "nat_instance" {
+  source           = "./modules/nat_instance"
+  vpc_id           = module.network.vpc_id
+  public_subnet_id = module.network.public_subnet_ids[0]
+  key_name         = "key1"
+}
+
+resource "aws_route" "private_to_nat" {
+  route_table_id         = module.network.private_route_table_id
+  destination_cidr_block = "0.0.0.0/0"
+  network_interface_id   = module.nat_instance.nat_instance_eni_id
+}
+
+# Target Group
+resource "aws_lb_target_group" "web_tg" {
+  name        = "web-tg"
+  port        = 30080
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = module.network.vpc_id
+
+  health_check {
+    path                = "/"
+    interval            = 30
+    protocol            = "HTTP"
+    healthy_threshold   = 3
+    unhealthy_threshold = 3
   }
-
-  depends_on = [aws_lambda_permission.allow_s3]
 }
 
-# EventBridge 스케줄링 → Lambda 실행
-resource "aws_cloudwatch_event_rule" "schedule_export" {
-  name                = "every-hour-export"
-  schedule_expression = "rate(1 hour)"
+module "lambda_to_onprem" {
+  source = "./modules/lambda_to_onprem"
+
+  s3_bucket      = var.s3_bucket
+  s3_key         = var.s3_key
+  onprem_api_url = var.onprem_api_url
 }
 
-resource "aws_cloudwatch_event_target" "event_to_lambda" {
-  rule = aws_cloudwatch_event_rule.schedule_export.name
-  arn  = aws_lambda_function.log_export_lambda.arn
-}
 
-resource "aws_lambda_permission" "allow_eventbridge" {
-  statement_id  = "AllowEventBridge"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.log_export_lambda.function_name
-  principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.schedule_export.arn
-}
+
+
+
+# resource "aws_lb_target_group_attachment" "eks_nodes" {
+#   count            = length(module.eks.node_instance_ids)
+#   target_group_arn = aws_lb_target_group.web_tg.arn
+#   target_id        = module.eks.node_instance_ids[count.index]
+#   port             = 30080
+# }
+
+
+# # ALB Listener
+# resource "aws_lb_listener" "web_listener" {
+#   load_balancer_arn = aws_lb.this.arn
+#   port              = 80
+#   protocol          = "HTTP"
+
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.web_tg.arn
+#   }
+# }
+
+# EKS 노드 EC2 인스턴스를 Target으로 연결
+# resource "aws_lb_target_group_attachment" "eks_nodes" {
+#   count            = length(module.eks.node_instance_ids)
+#   target_group_arn = aws_lb_target_group.web_tg.arn
+#   target_id        = module.eks.node_instance_ids[count.index]
+#   port             = 30080
+# }

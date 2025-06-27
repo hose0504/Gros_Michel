@@ -29,4 +29,7 @@ variable "s3_code_bucket_name" {
 }
 
 
-s3_key    = "modules/lambda_to_onprem/lambda_function_payload.zip"
+variable "lambda_zip_path" {
+  description = "Local path to the Lambda function zip file"
+  type        = string
+}

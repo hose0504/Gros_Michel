@@ -94,7 +94,8 @@ resource "aws_lambda_function" "s3_log_forwarder" {
   s3_bucket        = "aws-monitor-code-bucket"
   s3_key           = "lambda_function_payload.zip"
 
-  source_code_hash = filebase64sha256("${path.module}/modules/lambda_to_onprem/lambda_function_payload.zip")
+  source_code_hash = filebase64sha256(var.lambda_zip_path)
+
 
   timeout     = 10
   memory_size = 128

@@ -21,3 +21,8 @@ output "log_export_s3_path" {
   description = "Prefix in S3 where exported logs will be stored"
   value       = "s3://${aws_s3_bucket.log_export.bucket}/exported/"
 }
+
+output "lambda_zip_path" {
+  description = "Path to the Lambda zip file used for deployment"
+  value       = var.lambda_zip_path
+}
