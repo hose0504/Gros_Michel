@@ -17,14 +17,15 @@ variable "lambda_function_name" {
 }
 
 variable "s3_bucket" {
-  description = "S3 bucket for lambda deployment package"
+  description = "Lambda 코드가 저장된 S3 버킷"
   type        = string
 }
 
 variable "s3_key" {
-  description = "S3 object key for lambda zip"
+  description = "Lambda 코드 ZIP 파일 경로 (S3 내)"
   type        = string
 }
+
 
 
 

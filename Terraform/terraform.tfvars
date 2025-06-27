@@ -16,3 +16,4 @@ onprem_api_url = "http://192.168.100.10:8080/logs"
 
 s3_bucket = "team5-shared-storage-5bfcc8df"
 s3_key    = "lambda/lambda_function_payload.zip"
+
