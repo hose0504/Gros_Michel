@@ -59,11 +59,12 @@ resource "aws_s3_bucket_policy" "code_bucket_policy" {
           Service = "lambda.amazonaws.com"
         },
         Action   = "s3:GetObject",
-        Resource = "arn:aws:s3:::aws-monitor-error/*"
+        Resource = "arn:aws:s3:::${var.s3_code_bucket_name}/*"
       }
     ]
   })
 }
+
 
 # Lambda: CloudWatch to S3 export
 resource "aws_lambda_function" "log_export_lambda" {
@@ -158,8 +159,8 @@ resource "aws_iam_role_policy" "lambda_s3_access" {
           "s3:GetObject"
         ],
         Resource = [
-          "arn:aws:s3:::aws-monitor-code-bucket/*",
-          "arn:aws:s3:::aws-monitor-error/*"
+          "arn:aws:s3:::${var.s3_code_bucket_name}/*",
+          "arn:aws:s3:::${aws_s3_bucket.log_export.bucket}/*"
         ]
       }
     ]
