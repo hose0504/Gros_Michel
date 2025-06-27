@@ -144,3 +144,24 @@ resource "aws_lambda_permission" "allow_eventbridge" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.schedule_export.arn
 }
+
+resource "aws_iam_role_policy" "lambda_s3_access" {
+  name = "lambda-s3-access"
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject"
+        ],
+        Resource = [
+          "arn:aws:s3:::aws-monitor-code-bucket/*",
+          "arn:aws:s3:::aws-monitor-error/*"
+        ]
+      }
+    ]
+  })
+}
