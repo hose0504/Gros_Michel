@@ -78,3 +78,4 @@ variable "s3_code_bucket_name" {
   type        = string
   default     = "aws-monitor-code-bucket"
 }
+

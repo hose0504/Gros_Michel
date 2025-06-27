@@ -29,3 +29,4 @@ variable "s3_code_bucket_name" {
 }
 
 
+s3_key    = "modules/lambda_to_onprem/lambda_function_payload.zip"
