@@ -121,9 +121,8 @@ resource "aws_lambda_function" "log_export_lambda" {
   role          = aws_iam_role.lambda_role.arn
   handler       = "export_lambda_function.lambda_handler"
   runtime       = "python3.9"
-
-  s3_bucket         = var.s3_bucket
-  s3_key            = "export_lambda_payload.zip"
+  s3_bucket = var.s3_bucket
+  s3_key    = var.s3_key
   source_code_hash = filebase64sha256("${path.module}/../lambda_function_payload.zip")
 
 

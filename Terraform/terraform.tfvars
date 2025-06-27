@@ -14,8 +14,7 @@ region = "ap-northeast-2"
 project_id = "team5-onprem-test"  # 예시값
 onprem_api_url = "http://172.30.192.49:8000/logs"
 
-s3_bucket = "aws-monitor-error"
-s3_key    = "lambda/lambda_function_payload.zip"
-
+s3_bucket = "aws-monitor-code-bucket"
+s3_key = "export_lambda_payload.zip"
 
 
