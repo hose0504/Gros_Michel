@@ -33,7 +33,14 @@ resource "aws_lambda_function" "log_forwarder" {
 
   timeout       = 5
   memory_size   = 128
+
+  environment {
+    variables = {
+      ONPREM_API_URL = var.onprem_api_url
+    }
+  }
 }
+
 
 resource "aws_lambda_permission" "allow_cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"

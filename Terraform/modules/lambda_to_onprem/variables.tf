@@ -17,14 +17,20 @@ variable "lambda_function_name" {
 }
 
 variable "s3_bucket" {
+  description = "S3 bucket that contains the Lambda function payload"
   type        = string
-  description = "S3 bucket name for Lambda function deployment"
 }
 
 variable "s3_key" {
+  description = "S3 key (path) to the Lambda function .zip file"
   type        = string
-  description = "S3 object key (zip file path) for Lambda function code"
 }
+
+variable "onprem_api_url" {
+  description = "The HTTP endpoint for the on-premises log receiver"
+  type        = string
+}
+
 
 
 
