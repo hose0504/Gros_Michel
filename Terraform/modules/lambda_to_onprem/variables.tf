@@ -31,6 +31,10 @@ variable "onprem_api_url" {
   type        = string
 }
 
+variable "onprem_api_url" {
+  description = "The endpoint for the on-premise log receiver"
+  type        = string
+}
 
 
 
