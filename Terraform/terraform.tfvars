@@ -1,5 +1,5 @@
 aws_region         = "ap-northeast-2"
-
+region             = "ap-northeast-2"
 
 vpc_name           = "global-vpc"
 vpc_cidr_block     = "10.0.0.0/16"
