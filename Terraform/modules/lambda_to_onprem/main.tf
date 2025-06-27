@@ -91,11 +91,10 @@ resource "aws_lambda_function" "s3_log_forwarder" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.9"
-  s3_bucket            = "aws-monitor-code-bucket"
-  s3_key    = "modules/lambda_to_onprem/lambda_function_payload.zip"
-  source_code_hash = filebase64sha256("${path.module}/lambda_function_payload.zip")
+  s3_bucket        = "aws-monitor-code-bucket"
+  s3_key           = "lambda_function_payload.zip"
 
-
+  source_code_hash = filebase64sha256("${path.module}/modules/lambda_to_onprem/lambda_function_payload.zip")
 
   timeout     = 10
   memory_size = 128
@@ -106,6 +105,7 @@ resource "aws_lambda_function" "s3_log_forwarder" {
     }
   }
 }
+
 
 # Lambda Permission: allow S3 to trigger
 resource "aws_lambda_permission" "allow_s3" {
