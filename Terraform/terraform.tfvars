@@ -18,3 +18,7 @@ s3_bucket = "aws-monitor-code-bucket"
 s3_key = "export_lambda_payload.zip"
 
 
+lambda_zip_path        = "./modules/lambda_to_onprem/lambda_function_payload.zip"
+s3_code_bucket_name    = "aws-monitor-code-bucket"
+
+

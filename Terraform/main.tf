@@ -112,10 +112,13 @@ resource "aws_lb_target_group" "web_tg" {
 module "lambda_to_onprem" {
   source = "./modules/lambda_to_onprem"
 
-  s3_bucket      = var.s3_bucket
-  s3_key         = var.s3_key
-  onprem_api_url = var.onprem_api_url
+  lambda_zip_path        = var.lambda_zip_path
+  s3_code_bucket_name    = var.s3_code_bucket_name
+  s3_bucket              = var.s3_bucket
+  s3_key                 = var.s3_key
+  onprem_api_url         = var.onprem_api_url
 }
+
 
 
 

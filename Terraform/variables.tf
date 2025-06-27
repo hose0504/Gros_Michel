@@ -79,3 +79,27 @@ variable "s3_code_bucket_name" {
   default     = "aws-monitor-code-bucket"
 }
 
+variable "lambda_zip_path" {
+  type        = string
+  description = "Lambda zip 파일 경로 (로컬 경로)"
+}
+
+variable "s3_code_bucket_name" {
+  type        = string
+  description = "Lambda 코드를 저장한 S3 버킷 이름"
+}
+
+variable "s3_bucket" {
+  type        = string
+  description = "CloudWatch 로그를 export할 S3 버킷"
+}
+
+variable "s3_key" {
+  type        = string
+  description = "S3 안에서 Lambda zip의 키 이름"
+}
+
+variable "onprem_api_url" {
+  type        = string
+  description = "온프레미스 모니터링 서버의 API URL"
+}
