@@ -110,14 +110,19 @@ resource "aws_lb_target_group" "web_tg" {
 }
 
 module "lambda_to_onprem" {
-  source = "./modules/lambda_to_onprem"
-
-  lambda_zip_path        = var.lambda_zip_path
-  s3_code_bucket_name    = var.s3_code_bucket_name
-  s3_bucket              = var.s3_code_bucket_name   # ✅ 동일하게 맞춰줌
-  s3_key                 = var.s3_key
-  onprem_api_url         = var.onprem_api_url
+  source              = "./modules/lambda_to_onprem"
+  lambda_zip_path     = var.lambda_zip_path
+  s3_code_bucket_name = var.s3_code_bucket_name
+  s3_key              = var.s3_key
+  s3_bucket           = var.s3_bucket   # ✅ 이 줄 추가!
+  onprem_api_url      = var.onprem_api_url
 }
+
+
+
+
+
+
 
 
 
