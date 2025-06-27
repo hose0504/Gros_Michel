@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "log_export" {
 
 # Allow CloudWatch Logs service to put logs in the bucket
 resource "aws_s3_bucket_policy" "allow_lambda_get_code" {
-  bucket = "aws-monitor-code-bucket"
+  bucket = var.s3_bucket
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -21,16 +21,13 @@ resource "aws_s3_bucket_policy" "allow_lambda_get_code" {
           Service: "lambda.amazonaws.com"
         },
         Action: "s3:GetObject",
-        Resource: "arn:aws:s3:::aws-monitor-code-bucket/*",
-        Condition: {
-          StringEquals: {
-            "aws:SourceAccount" = data.aws_caller_identity.current.account_id
-          }
-        }
+        Resource: "arn:aws:s3:::${var.s3_bucket}/${var.s3_key}"
       }
     ]
   })
 }
+
+
 
 
 # IAM Role for Lambda execution
