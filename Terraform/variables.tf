@@ -4,12 +4,15 @@ variable "aws_secret_key" {}
 
 variable "vpc_name" {}
 variable "vpc_cidr_block" {}
+
 variable "public_subnets" {
   type = list(string)
 }
+
 variable "private_subnets" {
   type = list(string)
 }
+
 variable "azs" {
   type = list(string)
 }
@@ -40,12 +43,9 @@ variable "bucket_name" {
 }
 
 variable "environment" {
-  type = string
-  default   = "prod"
+  type    = string
+  default = "prod"
 }
-
-
-# 루트 디렉토리의 variables.tf
 
 variable "region" {
   description = "Region for AWS resources"
@@ -82,24 +82,4 @@ variable "s3_code_bucket_name" {
 variable "lambda_zip_path" {
   type        = string
   description = "Lambda zip 파일 경로 (로컬 경로)"
-}
-
-variable "s3_code_bucket_name" {
-  type        = string
-  description = "Lambda 코드를 저장한 S3 버킷 이름"
-}
-
-variable "s3_bucket" {
-  type        = string
-  description = "CloudWatch 로그를 export할 S3 버킷"
-}
-
-variable "s3_key" {
-  type        = string
-  description = "S3 안에서 Lambda zip의 키 이름"
-}
-
-variable "onprem_api_url" {
-  type        = string
-  description = "온프레미스 모니터링 서버의 API URL"
 }
