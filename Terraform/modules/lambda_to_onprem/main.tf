@@ -1,8 +1,13 @@
+# Declare caller identity
+data "aws_caller_identity" "current" {}
+
+# Create the S3 bucket for log export
 resource "aws_s3_bucket" "log_export" {
   bucket        = "aws-monitor-error"
   force_destroy = true
 }
 
+# Allow CloudWatch Logs service to put logs in the bucket
 resource "aws_s3_bucket_policy" "allow_log_put" {
   bucket = aws_s3_bucket.log_export.id
 
@@ -11,14 +16,14 @@ resource "aws_s3_bucket_policy" "allow_log_put" {
     Statement = [
       {
         Sid: "AllowLogsPutObject",
-        Effect = "Allow",
-        Principal = {
-          Service = "logs.${var.region}.amazonaws.com"
+        Effect: "Allow",
+        Principal: {
+          Service: "logs.${var.region}.amazonaws.com"
         },
-        Action = "s3:PutObject",
-        Resource = "${aws_s3_bucket.log_export.arn}/*",
-        Condition = {
-          StringEquals = {
+        Action: "s3:PutObject",
+        Resource: "${aws_s3_bucket.log_export.arn}/*",
+        Condition: {
+          StringEquals: {
             "aws:SourceAccount" = data.aws_caller_identity.current.account_id
           }
         }
@@ -27,26 +32,7 @@ resource "aws_s3_bucket_policy" "allow_log_put" {
   })
 }
 
-resource "aws_lambda_function" "s3_log_forwarder" {
-  function_name = "s3-log-to-onprem"
-  role          = aws_iam_role.lambda_role.arn
-  handler       = "lambda_function.lambda_handler"
-  runtime       = "python3.9"
-
-  s3_bucket         = var.s3_bucket
-  s3_key            = var.s3_key
-  source_code_hash  = filebase64sha256("lambda_function_payload.zip")
-
-  timeout     = 10
-  memory_size = 128
-
-  environment {
-    variables = {
-      ONPREM_API_URL = var.onprem_api_url
-    }
-  }
-}
-
+# IAM Role for Lambda execution
 resource "aws_iam_role" "lambda_role" {
   name = "lambda-s3-onprem-role"
 
@@ -60,6 +46,7 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
+# IAM Policy for Lambda: S3 Read, CloudWatch Logs access, and Export Task
 resource "aws_iam_role_policy" "lambda_policy" {
   name = "lambda-s3-policy"
   role = aws_iam_role.lambda_role.id
@@ -77,7 +64,8 @@ resource "aws_iam_role_policy" "lambda_policy" {
         Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
-          "logs:PutLogEvents"
+          "logs:PutLogEvents",
+          "logs:CreateExportTask"
         ],
         Resource = "*"
       }
@@ -85,6 +73,28 @@ resource "aws_iam_role_policy" "lambda_policy" {
   })
 }
 
+# Lambda: triggered by S3 to POST to OnPrem
+resource "aws_lambda_function" "s3_log_forwarder" {
+  function_name = "s3-log-to-onprem"
+  role          = aws_iam_role.lambda_role.arn
+  handler       = "lambda_function.lambda_handler"
+  runtime       = "python3.9"
+
+  s3_bucket         = var.s3_bucket
+  s3_key            = var.s3_key
+  source_code_hash  = filebase64sha256("${path.module}/lambda_function_payload.zip")
+
+  timeout     = 10
+  memory_size = 128
+
+  environment {
+    variables = {
+      ONPREM_API_URL = var.onprem_api_url
+    }
+  }
+}
+
+# Lambda permission for S3 to invoke it
 resource "aws_lambda_permission" "allow_s3" {
   statement_id  = "AllowExecutionFromS3"
   action        = "lambda:InvokeFunction"
@@ -93,6 +103,7 @@ resource "aws_lambda_permission" "allow_s3" {
   source_arn    = aws_s3_bucket.log_export.arn
 }
 
+# S3 event notification for object created → Lambda trigger
 resource "aws_s3_bucket_notification" "notify_lambda" {
   bucket = aws_s3_bucket.log_export.id
 
@@ -104,6 +115,7 @@ resource "aws_s3_bucket_notification" "notify_lambda" {
   depends_on = [aws_lambda_permission.allow_s3]
 }
 
+# Lambda: Export CloudWatch logs to S3
 resource "aws_lambda_function" "log_export_lambda" {
   function_name = "cloudwatch-to-s3-exporter"
   role          = aws_iam_role.lambda_role.arn
@@ -112,7 +124,7 @@ resource "aws_lambda_function" "log_export_lambda" {
 
   s3_bucket         = var.s3_bucket
   s3_key            = "export_lambda_payload.zip"
-  source_code_hash  = filebase64sha256("export_lambda_payload.zip")
+  source_code_hash  = filebase64sha256("${path.module}/export_lambda_payload.zip")
 
   timeout = 60
 
@@ -124,20 +136,23 @@ resource "aws_lambda_function" "log_export_lambda" {
   }
 }
 
+# EventBridge rule: run every hour
+resource "aws_cloudwatch_event_rule" "schedule_export" {
+  name                = "every-hour-export"
+  schedule_expression = "rate(1 hour)"
+}
+
+# EventBridge → Lambda target
+resource "aws_cloudwatch_event_target" "event_to_lambda" {
+  rule = aws_cloudwatch_event_rule.schedule_export.name
+  arn  = aws_lambda_function.log_export_lambda.arn
+}
+
+# Lambda permission for EventBridge
 resource "aws_lambda_permission" "allow_eventbridge" {
   statement_id  = "AllowEventBridge"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.log_export_lambda.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.schedule_export.arn
-}
-
-resource "aws_cloudwatch_event_rule" "schedule_export" {
-  name                = "every-hour-export"
-  schedule_expression = "rate(1 hour)" # 또는 cron(0 0 * * ? *) for daily
-}
-
-resource "aws_cloudwatch_event_target" "event_to_lambda" {
-  rule      = aws_cloudwatch_event_rule.schedule_export.name
-  arn       = aws_lambda_function.log_export_lambda.arn
 }
