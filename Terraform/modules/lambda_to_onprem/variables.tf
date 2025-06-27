@@ -26,10 +26,6 @@ variable "s3_key" {
   type        = string
 }
 
-variable "onprem_api_url" {
-  description = "The HTTP endpoint for the on-premises log receiver"
-  type        = string
-}
 
 variable "onprem_api_url" {
   description = "The endpoint for the on-premise log receiver"
