@@ -23,7 +23,9 @@ variable "onprem_api_url" {
 }
 
 variable "s3_code_bucket_name" {
-  description = "S3 bucket for Lambda code"
+  description = "S3 bucket name for Lambda code"
   type        = string
-  default     = "aws-monitor-error"  # ← 수정됨
+  default     = "aws-monitor-code-bucket"
 }
+
+
