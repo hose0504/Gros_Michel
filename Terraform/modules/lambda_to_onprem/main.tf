@@ -73,7 +73,8 @@ resource "aws_iam_role_policy" "lambda_s3_read" {
       Action = [
         "s3:GetObject"
       ],
-      Resource = "arn:aws:s3:::team5-shared-storage-0b71dbc61/lambda/*"
+      Resource = "arn:aws:s3:::team5-db-backup/lambda/*"
+
     }]
   })
 }
