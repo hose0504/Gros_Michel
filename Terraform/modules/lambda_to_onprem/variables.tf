@@ -1,14 +1,27 @@
-variable "onprem_api_url" {
-  type        = string
-  default     = "http://192.168.100.10:8080/logs"
-  description = "온프렘 수신 API URL"
-}
-# modules/lambda_to_onprem/variables.tf
-
 variable "region" {
-  type = string
+  description = "AWS region"
+  type        = string
+  default     = "ap-northeast-2"
 }
 
-variable "project_id" {
-  type = string
+variable "log_group_name" {
+  description = "CloudWatch Log Group name"
+  type        = string
+  default     = "/aws/lambda/app-error"
+}
+
+variable "lambda_function_name" {
+  description = "Lambda function name"
+  type        = string
+  default     = "lambda-to-onprem-logger"
+}
+
+variable "s3_bucket" {
+  description = "S3 bucket for lambda deployment package"
+  type        = string
+}
+
+variable "s3_key" {
+  description = "S3 object key for lambda zip"
+  type        = string
 }
