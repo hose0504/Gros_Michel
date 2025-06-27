@@ -14,6 +14,12 @@ variable "s3_bucket" {
   default     = "aws-monitor-code-bucket"
 }
 
+variable "s3_code_bucket_name" {
+  description = "S3 bucket used in bucket policy for Lambda access"
+  type        = string
+  default     = "aws-monitor-code-bucket"
+}
+
 variable "s3_key" {
   description = "Lambda deployment package zip file key"
   type        = string
@@ -24,4 +30,4 @@ variable "onprem_api_url" {
   description = "URL of the on-premises server to POST logs to"
   type        = string
   default     = "http://your-onprem-server/log"
-} 
+}
