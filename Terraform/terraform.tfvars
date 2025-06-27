@@ -14,6 +14,5 @@ region = "ap-northeast-2"
 project_id = "team5-onprem-test"  # 예시값
 onprem_api_url = "http://192.168.100.10:8080/logs"
 
-s3_bucket = "team5-shared-storage-5bfcc8df"
+s3_bucket = "team5-shared-storage-0b71dbc61"
 s3_key    = "lambda/lambda_function_payload.zip"
-
