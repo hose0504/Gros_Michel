@@ -61,3 +61,19 @@ resource "aws_cloudwatch_log_subscription_filter" "to_lambda" {
     aws_lambda_permission.allow_cloudwatch
   ]
 }
+
+resource "aws_iam_role_policy" "lambda_s3_read" {
+  name = "lambda-s3-read"
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "s3:GetObject"
+      ],
+      Resource = "arn:aws:s3:::team5-shared-storage-0b71dbc61/lambda/*"
+    }]
+  })
+}
