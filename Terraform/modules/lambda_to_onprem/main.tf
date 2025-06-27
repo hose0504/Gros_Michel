@@ -124,7 +124,8 @@ resource "aws_lambda_function" "log_export_lambda" {
 
   s3_bucket         = var.s3_bucket
   s3_key            = "export_lambda_payload.zip"
-  source_code_hash  = filebase64sha256("${path.module}/export_lambda_payload.zip")
+  source_code_hash = filebase64sha256("${path.module}/../lambda_function_payload.zip")
+
 
   timeout = 60
 
