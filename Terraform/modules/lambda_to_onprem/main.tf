@@ -2,10 +2,8 @@
 # main.tf
 ###########################################
 
-# 현재 계정 정보
 data "aws_caller_identity" "current" {}
 
-# IAM Role for Lambda execution
 resource "aws_iam_role" "lambda_role" {
   name = "lambda-execution-role"
 
@@ -19,7 +17,6 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
-# IAM Policy for Lambda
 resource "aws_iam_role_policy" "lambda_policy" {
   name = "lambda-s3-policy"
   role = aws_iam_role.lambda_role.id
@@ -46,9 +43,13 @@ resource "aws_iam_role_policy" "lambda_policy" {
   })
 }
 
-# 버킷 정책: Lambda가 S3에서 ZIP을 읽을 수 있도록 허용
+resource "aws_s3_bucket" "log_export" {
+  bucket        = "aws-monitor-error"
+  force_destroy = true
+}
+
 resource "aws_s3_bucket_policy" "allow_lambda_get_code" {
-  bucket = var.s3_bucket
+  bucket = var.s3_code_bucket_name
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -60,24 +61,12 @@ resource "aws_s3_bucket_policy" "allow_lambda_get_code" {
           Service = "lambda.amazonaws.com"
         },
         Action    = "s3:GetObject",
-        Resource  = "arn:aws:s3:::${var.s3_bucket}/*",
-        Condition = {
-          StringEquals = {
-            "aws:SourceAccount" = data.aws_caller_identity.current.account_id
-          }
-        }
+        Resource  = "arn:aws:s3:::${var.s3_code_bucket_name}/*"
       }
     ]
   })
 }
 
-# 로그 저장용 S3 버킷 생성
-resource "aws_s3_bucket" "log_export" {
-  bucket        = "aws-monitor-error"
-  force_destroy = true
-}
-
-# CloudWatch 로그 → S3로 내보내는 Lambda
 resource "aws_lambda_function" "log_export_lambda" {
   function_name    = "cloudwatch-to-s3-exporter"
   role             = aws_iam_role.lambda_role.arn
@@ -96,7 +85,6 @@ resource "aws_lambda_function" "log_export_lambda" {
   }
 }
 
-# S3 업로드 시 OnPrem으로 POST하는 Lambda
 resource "aws_lambda_function" "s3_log_forwarder" {
   function_name    = "s3-log-to-onprem"
   role             = aws_iam_role.lambda_role.arn
@@ -116,7 +104,6 @@ resource "aws_lambda_function" "s3_log_forwarder" {
   }
 }
 
-# S3 → Lambda 트리거 연결
 resource "aws_lambda_permission" "allow_s3" {
   statement_id  = "AllowExecutionFromS3"
   action        = "lambda:InvokeFunction"
@@ -136,7 +123,6 @@ resource "aws_s3_bucket_notification" "notify_lambda" {
   depends_on = [aws_lambda_permission.allow_s3]
 }
 
-# EventBridge 일정 실행 설정
 resource "aws_cloudwatch_event_rule" "schedule_export" {
   name                = "every-hour-export"
   schedule_expression = "rate(1 hour)"

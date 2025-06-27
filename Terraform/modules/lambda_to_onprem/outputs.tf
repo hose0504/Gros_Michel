@@ -2,11 +2,6 @@
 # outputs.tf
 ###########################################
 
-output "s3_bucket_name" {
-  description = "The name of the S3 bucket for CloudWatch log export"
-  value       = aws_s3_bucket.log_export.id
-}
-
 output "lambda_export_function_name" {
   description = "Lambda function that exports CloudWatch logs to S3"
   value       = aws_lambda_function.log_export_lambda.function_name

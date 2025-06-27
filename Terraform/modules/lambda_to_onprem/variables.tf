@@ -25,3 +25,9 @@ variable "onprem_api_url" {
   type        = string
   default     = "http://your-onprem-server/log"
 }
+
+variable "s3_code_bucket_name" {
+  description = "S3 bucket for Lambda code"
+  type        = string
+  default     = "aws-monitor-code-bucket"
+}
