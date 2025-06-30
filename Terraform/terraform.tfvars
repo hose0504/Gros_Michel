@@ -15,7 +15,7 @@ project_id         = "team5-onprem-test"
 onprem_api_url     = "http://172.30.192.49:8000/logs"
 
 # 💡 Lambda 관련 변수
-lambda_zip_path        = "./modules/lambda_to_onprem/lambda_function_payload.zip"
-s3_key                 = "lambda_function_payload.zip"
+lambda_zip_path        = "./modules/lambda_to_onprem/function.zip lambda_function.zip"
+s3_key                 = "function.zip lambda_function.zip"
 s3_code_bucket_name    = "aws-monitor-code-bucket-123456789012"
 s3_bucket = "aws-monitor-code-bucket-123456789012"  # 로그 저장용 S3 버킷 (사용 시점 명확히 구분 필요)
