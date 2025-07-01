@@ -60,7 +60,7 @@ variable "project_id" {
 variable "onprem_api_url" {
   description = "URL for on-prem log receiver"
   type        = string
-  default     = "http://192.168.100.10:8080/logs"
+  default     = "http://172.30.192.49:8080/logs"
 }
 
 variable "s3_bucket" {
