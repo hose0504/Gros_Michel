@@ -12,7 +12,7 @@ def lambda_handler(event, context):
             log_message = log_event.get("message", "")
             try:
                 response = requests.post(
-                    "http://172.30.192.49:8000/receive_logs",  # ⚠️ FastAPI의 실제 경로 확인
+                    " http://112.221.198.140:10005/receive_logs",  # ⚠️ FastAPI의 실제 경로 확인
                     json={"log": log_message},
                     timeout=3
                 )
