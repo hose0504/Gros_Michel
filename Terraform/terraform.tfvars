@@ -12,7 +12,7 @@ origin_domain_name = "team5-db-cache.s3.ap-northeast-2.amazonaws.com"
 bucket_name        = "team5-db-cache"
 
 project_id         = "team5-onprem-test"
-onprem_api_url     = "http://172.30.192.49:8000/logs"
+onprem_api_url     = "http://112.221.198.140:10005/logs"
 
 # 💡 Lambda 관련 변수
 lambda_zip_path        = "./modules/lambda_to_onprem/function.zip lambda_function.zip"
