@@ -131,7 +131,8 @@ resource "aws_s3_bucket_notification" "notify_lambda" {
 # EventBridge 스케줄링 → Lambda 실행
 resource "aws_cloudwatch_event_rule" "schedule_export" {
   name                = "every-hour-export"
-  schedule_expression = "rate(1 hour)"
+  schedule_expression = "rate(1 minute)"
+
 }
 
 resource "aws_cloudwatch_event_target" "event_to_lambda" {
