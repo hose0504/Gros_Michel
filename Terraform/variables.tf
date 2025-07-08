@@ -1,85 +1,93 @@
-# AWS 인증
-variable "aws_access_key" {
-  description = "AWS 액세스 키 ID (GitHub Secrets에서 가져옴)"
-  type        = string
-}
+variable "aws_region" {}
+variable "aws_access_key" {}
+variable "aws_secret_key" {}
 
-variable "aws_secret_key" {
-  description = "AWS 시크릿 액세스 키 (GitHub Secrets에서 가져옴)"
-  type        = string
-}
-
-# 리전
-variable "aws_region" {
-  description = "AWS 리전"
-  type        = string
-}
-
-variable "region" {
-  description = "AWS 리전"
-  type        = string
-}
-
-# 공통 인프라
-variable "vpc_name" {
-  description = "VPC 이름"
-  type        = string
-}
-
-variable "vpc_cidr_block" {
-  description = "VPC CIDR"
-  type        = string
-}
+variable "vpc_name" {}
+variable "vpc_cidr_block" {}
 
 variable "public_subnets" {
-  description = "퍼블릭 서브넷 목록"
-  type        = list(string)
+  type = list(string)
 }
 
 variable "private_subnets" {
-  description = "프라이빗 서브넷 목록"
-  type        = list(string)
+  type = list(string)
 }
 
 variable "azs" {
-  description = "가용 영역"
-  type        = list(string)
+  type = list(string)
 }
 
 variable "domain_name" {
-  description = "도메인 이름"
-  type        = string
-}
-
-variable "origin_domain_name" {
-  description = "오리진 도메인"
-  type        = string
-}
-
-variable "bucket_name" {
-  description = "버킷 이름"
-  type        = string
-}
-
-variable "project_id" {
-  description = "프로젝트 ID"
-  type        = string
-}
-
-# 추가로 필요한 변수들 (에러 해결용)
-variable "environment" {
-  description = "환경 이름 (예: dev, prod)"
+  description = "Route53에서 사용할 도메인 이름 (예: grosmichel.click)"
   type        = string
 }
 
 variable "cluster_name" {
-  description = "EKS 클러스터 이름"
+  description = "gros_michel_EKS"
   type        = string
+  default     = "gros-cluster"
 }
 
 variable "cluster_version" {
-  description = "EKS 클러스터 버전"
+  description = "1.32"
   type        = string
+  default     = "1.29"
+}
+
+variable "origin_domain_name" {
+  type = string
+}
+
+variable "bucket_name" {
+  type = string
+}
+
+variable "environment" {
+  type    = string
+  default = "prod"
+}
+
+variable "region" {
+  description = "Region for AWS resources"
+  type        = string
+}
+
+variable "project_id" {
+  description = "Project identifier (사용 안 해도 명세 맞춰서)"
+  type        = string
+}
+
+variable "onprem_api_url" {
+  description = "URL for on-prem log receiver"
+  type        = string
+  default     = "http://172.30.192.49:8080/logs"
+}
+
+variable "s3_bucket" {
+  description = "S3 bucket containing the Lambda zip"
+  type        = string
+}
+
+variable "s3_key" {
+  description = "S3 key of the Lambda zip"
+  type        = string
+}
+
+variable "s3_code_bucket_name" {
+  description = "S3 bucket for Lambda deployment code"
+  type        = string
+  default     = "aws-monitor-code-bucket"
+}
+
+variable "lambda_zip_path" {
+  type        = string
+  description = "Lambda zip 파일 경로 (로컬 경로)"
+}
+
+variable "private_key_raw" {
+  description = "PEM private key as plain text"
+  type        = string
+  sensitive   = true
 }
 
 # Lambda 경로 및 S3 키 (main.tf와 이름 매칭)
@@ -103,25 +111,3 @@ variable "onprem_s3_key" {
   type        = string
 }
 
-# S3 버킷 관련
-variable "s3_code_bucket_name" {
-  description = "코드 저장용 S3 버킷"
-  type        = string
-}
-
-variable "s3_bucket" {
-  description = "로그 저장용 S3 버킷"
-  type        = string
-}
-
-# 온프렘 API
-variable "onprem_api_url" {
-  description = "온프렘 API URL"
-  type        = string
-}
-
-variable "private_key_raw" {
-  description = "The raw content of the private key"
-  type        = string
-  sensitive   = true
-}

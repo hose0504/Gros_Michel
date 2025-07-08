@@ -36,3 +36,4 @@ s3_bucket           = "aws-monitor-code-bucket-123456789012"
 
 # 온프렘 API URL
 onprem_api_url      = "http://112.221.198.140:10005/logs"
+

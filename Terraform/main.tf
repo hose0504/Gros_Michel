@@ -64,6 +64,8 @@ module "web_ec2" {
   allow_all_access = true
   subnet_id = module.network.public_subnet_ids[0]
   vpc_id    = module.network.vpc_id
+
+  private_key = var.private_key_raw
 }
 
 module "eks" {
@@ -115,12 +117,6 @@ resource "aws_lb_target_group" "web_tg" {
   }
 }
 
-module "lambda_to_onprem" {
-  source              = "./modules/lambda_to_onprem"
-  lambda_zip_path     = var.lambda_zip_path
-  s3_code_bucket_name = var.s3_code_bucket_name
-  s3_key              = var.s3_key
-  s3_bucket           = var.s3_bucket
-  onprem_api_url      = var.onprem_api_url
-}
+
+
 
