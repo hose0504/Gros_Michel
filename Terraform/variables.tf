@@ -79,11 +79,6 @@ variable "s3_code_bucket_name" {
   default     = "aws-monitor-code-bucket"
 }
 
-variable "lambda_zip_path" {
-  type        = string
-  description = "Lambda zip 파일 경로 (로컬 경로)"
-}
-
 # Lambda 경로 및 S3 키 (main.tf와 이름 매칭)
 variable "log_export_lambda_zip_path" {
   description = "CloudWatch → S3 Lambda zip 경로"
