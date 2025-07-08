@@ -27,7 +27,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: 복원 .pem 파일 (base64 없이 직접 저장된 평문 사용)
+      - name: 복원 .pem 파일 (plain)
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" > ~/.ssh/key1.pem
@@ -38,20 +38,18 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          PRIVATE_KEY=$(cat ~/.ssh/key1.pem)
           terraform plan \
             -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
             -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-            -var="private_key_raw=$PRIVATE_KEY" \
+            -var="private_key_raw=${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" \
             -var-file="terraform.tfvars"
 
       - name: Terraform Apply
         run: |
-          PRIVATE_KEY=$(cat ~/.ssh/key1.pem)
           terraform apply -auto-approve \
             -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
             -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-            -var="private_key_raw=$PRIVATE_KEY" \
+            -var="private_key_raw=${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" \
             -var-file="terraform.tfvars"
 
   terraform-destroy:
@@ -73,7 +71,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: 복원 .pem 파일 (base64 없이 직접 저장된 평문 사용)
+      - name: 복원 .pem 파일 (plain)
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" > ~/.ssh/key1.pem
@@ -84,11 +82,10 @@ jobs:
 
       - name: Terraform Destroy
         run: |
-          PRIVATE_KEY=$(cat ~/.ssh/key1.pem)
           terraform destroy -auto-approve \
             -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
             -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-            -var="private_key_raw=$PRIVATE_KEY" \
+            -var="private_key_raw=${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" \
             -var-file="terraform.tfvars"
 
   no-action:
