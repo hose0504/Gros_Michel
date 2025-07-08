@@ -111,3 +111,8 @@ variable "onprem_s3_key" {
   type        = string
 }
 
+variable "private_key_path" {
+  description = "The path contents of the private key file used for SSH connection"
+  type        = string
+  sensitive   = true
+}
