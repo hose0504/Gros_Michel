@@ -1,3 +1,13 @@
+variable "aws_access_key" {
+  description = "AWS 액세스 키 ID (GitHub Secrets에서 가져옴)"
+  type        = string
+}
+
+variable "aws_secret_key" {
+  description = "AWS 시크릿 액세스 키 (GitHub Secrets에서 가져옴)"
+  type        = string
+}
+
 variable "aws_region" {
   description = "AWS 리전"
   type        = string
