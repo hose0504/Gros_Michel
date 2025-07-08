@@ -1,3 +1,4 @@
+# AWS 인증
 variable "aws_access_key" {
   description = "AWS 액세스 키 ID (GitHub Secrets에서 가져옴)"
   type        = string
@@ -8,6 +9,7 @@ variable "aws_secret_key" {
   type        = string
 }
 
+# 리전
 variable "aws_region" {
   description = "AWS 리전"
   type        = string
@@ -18,6 +20,7 @@ variable "region" {
   type        = string
 }
 
+# 공통 인프라
 variable "vpc_name" {
   description = "VPC 이름"
   type        = string
@@ -63,32 +66,44 @@ variable "project_id" {
   type        = string
 }
 
-variable "onprem_api_url" {
-  description = "온프렘 API URL"
+# 추가로 필요한 변수들 (에러 해결용)
+variable "environment" {
+  description = "환경 이름 (예: dev, prod)"
   type        = string
 }
 
-# Lambda 별 zip 경로 및 키
-variable "lambda_zip_path_export" {
+variable "cluster_name" {
+  description = "EKS 클러스터 이름"
+  type        = string
+}
+
+variable "cluster_version" {
+  description = "EKS 클러스터 버전"
+  type        = string
+}
+
+# Lambda 경로 및 S3 키 (main.tf와 이름 매칭)
+variable "log_export_lambda_zip_path" {
   description = "CloudWatch → S3 Lambda zip 경로"
   type        = string
 }
 
-variable "s3_key_export" {
+variable "log_export_s3_key" {
   description = "CloudWatch → S3 Lambda S3 key"
   type        = string
 }
 
-variable "lambda_zip_path_forward" {
-  description = "S3 → OnPrem Lambda zip 경로"
+variable "onprem_lambda_zip_path" {
+  description = "S3 → 온프렘 Lambda zip 경로"
   type        = string
 }
 
-variable "s3_key_forward" {
-  description = "S3 → OnPrem Lambda S3 key"
+variable "onprem_s3_key" {
+  description = "S3 → 온프렘 Lambda S3 key"
   type        = string
 }
 
+# S3 버킷 관련
 variable "s3_code_bucket_name" {
   description = "코드 저장용 S3 버킷"
   type        = string
@@ -96,5 +111,11 @@ variable "s3_code_bucket_name" {
 
 variable "s3_bucket" {
   description = "로그 저장용 S3 버킷"
+  type        = string
+}
+
+# 온프렘 API
+variable "onprem_api_url" {
+  description = "온프렘 API URL"
   type        = string
 }
