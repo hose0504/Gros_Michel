@@ -63,16 +63,6 @@ variable "onprem_api_url" {
   default     = "http://172.30.192.49:8080/logs"
 }
 
-variable "s3_bucket" {
-  description = "S3 bucket containing the Lambda zip"
-  type        = string
-}
-
-variable "s3_key" {
-  description = "S3 key of the Lambda zip"
-  type        = string
-}
-
 variable "s3_code_bucket_name" {
   description = "S3 bucket for Lambda deployment code"
   type        = string
