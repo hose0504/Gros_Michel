@@ -27,10 +27,10 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: 복원 .pem 파일
+      - name: 복원 .pem 파일 (base64 없이 직접 저장된 평문 사용)
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_PRIVATE_KEY_B64 }}" | base64 -d > ~/.ssh/key1.pem
+          echo "${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" > ~/.ssh/key1.pem
           chmod 600 ~/.ssh/key1.pem
 
       - name: Terraform Init
@@ -73,10 +73,10 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: 복원 .pem 파일
+      - name: 복원 .pem 파일 (base64 없이 직접 저장된 평문 사용)
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_PRIVATE_KEY_B64 }}" | base64 -d > ~/.ssh/key1.pem
+          echo "${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" > ~/.ssh/key1.pem
           chmod 600 ~/.ssh/key1.pem
 
       - name: Terraform Init
@@ -90,7 +90,6 @@ jobs:
             -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
             -var="private_key_raw=$PRIVATE_KEY" \
             -var-file="terraform.tfvars"
-
 
   no-action:
     if: "!contains(github.event.head_commit.message, 'apply') && !contains(github.event.head_commit.message, 'destroy')"
