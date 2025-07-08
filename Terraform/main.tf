@@ -65,8 +65,8 @@ module "web_ec2" {
   subnet_id        = module.network.public_subnet_ids[0]
   vpc_id           = module.network.vpc_id
 
-  private_key_path = var.private_key_path
-  private_key_raw  = var.private_key_raw
+  # private_key_path = var.private_key_path
+  # private_key_raw  = var.private_key_raw
 }
 
 module "eks" {

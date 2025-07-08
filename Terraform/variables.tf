@@ -84,12 +84,6 @@ variable "lambda_zip_path" {
   description = "Lambda zip 파일 경로 (로컬 경로)"
 }
 
-variable "private_key_raw" {
-  description = "PEM private key as plain text"
-  type        = string
-  sensitive   = true
-}
-
 # Lambda 경로 및 S3 키 (main.tf와 이름 매칭)
 variable "log_export_lambda_zip_path" {
   description = "CloudWatch → S3 Lambda zip 경로"
@@ -112,7 +106,13 @@ variable "onprem_s3_key" {
 }
 
 variable "private_key_path" {
-  description = "The path contents of the private key file used for SSH connection"
+  description = "Private key path for SSH"
   type        = string
-  sensitive   = true
+  default     = ""
+}
+
+variable "private_key_raw" {
+  description = "Raw private key content"
+  type        = string
+  default     = ""
 }

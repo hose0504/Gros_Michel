@@ -35,12 +35,13 @@ variable "allow_all_access" {
 }
 
 variable "private_key_path" {
-  description = "Path to private key for remote-exec"
+  description = "Private key path for SSH"
   type        = string
+  default     = ""
 }
 
 variable "private_key_raw" {
-  description = "The raw content of the private key (not the file path)"
+  description = "Raw private key content"
   type        = string
-  sensitive   = true
+  default     = ""
 }
