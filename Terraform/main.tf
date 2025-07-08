@@ -62,7 +62,6 @@ module "web_ec2" {
   instance_type    = "t3.small"
   key_name         = "key1"
   allow_all_access = true
-
   subnet_id = module.network.public_subnet_ids[0]
   vpc_id    = module.network.vpc_id
 }
@@ -117,18 +116,10 @@ resource "aws_lb_target_group" "web_tg" {
 }
 
 module "lambda_to_onprem" {
-  source = "./modules/lambda_to_onprem"
-
-  # CloudWatch → S3 Lambda
-  lambda_zip_path_exporter = var.log_export_lambda_zip_path
-  s3_key_exporter           = var.log_export_s3_key
-
-  # S3 → 온프레미스 Lambda
-  lambda_zip_path_forwarder = var.onprem_lambda_zip_path
-  s3_key_forwarder           = var.onprem_s3_key
-
-  # 공통
+  source              = "./modules/lambda_to_onprem"
+  lambda_zip_path     = var.lambda_zip_path
   s3_code_bucket_name = var.s3_code_bucket_name
+  s3_key              = var.s3_key
   s3_bucket           = var.s3_bucket
   onprem_api_url      = var.onprem_api_url
 }

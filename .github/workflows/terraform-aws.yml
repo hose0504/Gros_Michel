@@ -27,14 +27,32 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
+      - name: 복원 .pem 파일
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_PRIVATE_KEY_B64 }}" | base64 -d > ~/.ssh/key1.pem
+          chmod 600 ~/.ssh/key1.pem
+
       - name: Terraform Init
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -var-file="terraform.tfvars"
+        run: |
+          PRIVATE_KEY=$(cat ~/.ssh/key1.pem)
+          terraform plan \
+            -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -var="private_key_raw=$PRIVATE_KEY" \
+            -var-file="terraform.tfvars"
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -var-file="terraform.tfvars"
+        run: |
+          PRIVATE_KEY=$(cat ~/.ssh/key1.pem)
+          terraform apply -auto-approve \
+            -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -var="private_key_raw=$PRIVATE_KEY" \
+            -var-file="terraform.tfvars"
 
   terraform-destroy:
     if: contains(github.event.head_commit.message, 'destroy')
@@ -55,11 +73,24 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
+      - name: 복원 .pem 파일
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_PRIVATE_KEY_B64 }}" | base64 -d > ~/.ssh/key1.pem
+          chmod 600 ~/.ssh/key1.pem
+
       - name: Terraform Init
         run: terraform init
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -var-file="terraform.tfvars"
+        run: |
+          PRIVATE_KEY=$(cat ~/.ssh/key1.pem)
+          terraform destroy -auto-approve \
+            -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -var="private_key_raw=$PRIVATE_KEY" \
+            -var-file="terraform.tfvars"
+
 
   no-action:
     if: "!contains(github.event.head_commit.message, 'apply') && !contains(github.event.head_commit.message, 'destroy')"

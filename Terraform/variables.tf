@@ -119,3 +119,9 @@ variable "onprem_api_url" {
   description = "온프렘 API URL"
   type        = string
 }
+
+variable "private_key_raw" {
+  description = "The raw content of the private key"
+  type        = string
+  sensitive   = true
+}

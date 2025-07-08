@@ -33,3 +33,14 @@ variable "allow_all_access" {
   type        = bool
   default     = false
 }
+
+variable "private_key_path" {
+  description = "Path to private key for remote-exec"
+  type        = string
+}
+
+variable "private_key_raw" {
+  description = "The raw content of the private key (not the file path)"
+  type        = string
+  sensitive   = true
+}
