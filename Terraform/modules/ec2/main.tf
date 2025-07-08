@@ -13,6 +13,15 @@ resource "aws_security_group" "this" {
     }
   }
 
+  # ✅ 포트 8000 (FastAPI용) 명시적으로 추가
+  ingress {
+    description = "Allow FastAPI traffic"
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   dynamic "egress" {
     for_each = var.allow_all_access ? [1] : []
     content {
@@ -29,15 +38,14 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_instance" "this" {
-ami                    = var.ami_id
-instance_type          = var.instance_type
-subnet_id              = var.subnet_id
-key_name               = var.key_name
-vpc_security_group_ids = [aws_security_group.this.id] 
+  ami                    = var.ami_id
+  instance_type          = var.instance_type
+  subnet_id              = var.subnet_id
+  key_name               = var.key_name
+  vpc_security_group_ids = [aws_security_group.this.id]
+  user_data              = file("${path.root}/scripts/user.sh")
 
-user_data = file("${path.root}/scripts/user.sh")
-
-tags = {
-    Name =  "terraform-nginx"
-}
+  tags = {
+    Name = "terraform-nginx"
+  }
 }

@@ -1,34 +1,90 @@
-variable "aws_region" {}
-variable "aws_access_key" {}
-variable "aws_secret_key" {}
+variable "aws_region" {
+  description = "AWS 리전"
+  type        = string
+}
 
-variable "vpc_name" {}
-variable "vpc_cidr_block" {}
+variable "region" {
+  description = "AWS 리전"
+  type        = string
+}
+
+variable "vpc_name" {
+  description = "VPC 이름"
+  type        = string
+}
+
+variable "vpc_cidr_block" {
+  description = "VPC CIDR"
+  type        = string
+}
+
 variable "public_subnets" {
-  type = list(string)
+  description = "퍼블릭 서브넷 목록"
+  type        = list(string)
 }
+
 variable "private_subnets" {
-  type = list(string)
+  description = "프라이빗 서브넷 목록"
+  type        = list(string)
 }
+
 variable "azs" {
-  type = list(string)
+  description = "가용 영역"
+  type        = list(string)
 }
 
 variable "domain_name" {
-  description = "Route53에서 사용할 도메인 이름 (예: grosmichel.click)"
+  description = "도메인 이름"
   type        = string
 }
 
-variable "cluster_name" {
-  description = "gros_michel_EKS"
+variable "origin_domain_name" {
+  description = "오리진 도메인"
   type        = string
-  default     = "gros-cluster"
 }
 
-variable "cluster_version" {
-  description = "1.32"
+variable "bucket_name" {
+  description = "버킷 이름"
   type        = string
-  default     = "1.29"
 }
 
+variable "project_id" {
+  description = "프로젝트 ID"
+  type        = string
+}
 
+variable "onprem_api_url" {
+  description = "온프렘 API URL"
+  type        = string
+}
+
+# Lambda 별 zip 경로 및 키
+variable "lambda_zip_path_export" {
+  description = "CloudWatch → S3 Lambda zip 경로"
+  type        = string
+}
+
+variable "s3_key_export" {
+  description = "CloudWatch → S3 Lambda S3 key"
+  type        = string
+}
+
+variable "lambda_zip_path_forward" {
+  description = "S3 → OnPrem Lambda zip 경로"
+  type        = string
+}
+
+variable "s3_key_forward" {
+  description = "S3 → OnPrem Lambda S3 key"
+  type        = string
+}
+
+variable "s3_code_bucket_name" {
+  description = "코드 저장용 S3 버킷"
+  type        = string
+}
+
+variable "s3_bucket" {
+  description = "로그 저장용 S3 버킷"
+  type        = string
+}
