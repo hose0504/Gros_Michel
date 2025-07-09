@@ -49,6 +49,7 @@ jobs:
             -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
             -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
             -var="private_key_raw=${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" \
+            -var="private_key_raw=${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" \
             -var-file="terraform.tfvars"
 
   terraform-destroy:
