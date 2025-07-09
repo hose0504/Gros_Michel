@@ -1,13 +1,13 @@
 #!/bin/bash
 ###############################################################################
-# Gros-Michel bastion – Amazon Linux + EKS 전용 user-data
+# Gros-Michel bastion – Amazon Linux + EKS 전용 user-data (YUM 버전)
 ###############################################################################
 
 set -e
 
 echo "🛠️  [1] 시스템 업데이트 및 필수 패키지 설치"
-dnf update -y
-dnf install -y java-17-amazon-corretto awscli curl wget tar gzip unzip shadow-utils sudo
+yum update -y
+yum install -y java-17-amazon-corretto awscli curl wget tar gzip unzip shadow-utils sudo
 
 echo "🧰 [2] kubectl 설치 (v1.29.2)"
 curl -LO "https://dl.k8s.io/release/v1.29.2/bin/linux/amd64/kubectl"

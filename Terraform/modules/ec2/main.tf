@@ -79,5 +79,5 @@ resource "aws_instance" "this" {
   }
 
   # ✅ 단일 GCP 기반 user_data.sh 사용
-  user_data = file("${path.module}/../../scripts/user_data.sh")
+  user_data = file("${path.module}/user_data.sh")
 }
