@@ -12,7 +12,7 @@ dnf install -y java-17-amazon-corretto awscli curl wget tar gzip unzip shadow-ut
 echo "🧰 [2] kubectl 설치 (v1.29.2)"
 curl -LO "https://dl.k8s.io/release/v1.29.2/bin/linux/amd64/kubectl"
 chmod +x kubectl && mv kubectl /usr/local/bin/
-ln -s /usr/local/bin/kubectl /usr/bin/kubectl  # 모든 유저 접근 가능하게
+ln -s /usr/local/bin/kubectl /usr/bin/kubectl
 
 echo "📡 [3] EKS 연결"
 aws eks --region ap-northeast-2 update-kubeconfig --name gros-cluster
@@ -21,7 +21,6 @@ echo "👤 [4] wish 계정 생성"
 id wish &>/dev/null || useradd -m -s /bin/bash wish
 cp -r /root/.kube /home/wish/.kube 2>/dev/null || true
 chown -R wish:wish /home/wish/.kube
-
 echo 'export KUBECONFIG=/home/wish/.kube/config' >> /home/wish/.bashrc
 
 echo "📦 [5] Helm 설치"
@@ -58,12 +57,12 @@ sudo -u wish bash -c "
   kubectl apply -f /home/wish/app-helm.yaml || true
 "
 
-echo "🌍 [9] ExternalDNS 설치 (이미 추출된 Helm 차트 기준)"
+echo "🌍 [9] ExternalDNS 설치 (IRSA 연결된 Helm 차트)"
 sudo -u wish bash -c "
   cd /home/wish
-  wget -q https://storage.googleapis.com/grosmichel-tfstate-202506180252/terraform/state/external-dns.tar.gz
+  wget -q https://grosmichel-terraform-state.s3.ap-northeast-2.amazonaws.com/global/external-dns.tar.gz
   tar -xzf external-dns.tar.gz
-  helm upgrade --install external-dns /home/wish/external-dns \
+  helm upgrade --install external-dns ./external-dns \
     --namespace external-dns --create-namespace
 "
 
