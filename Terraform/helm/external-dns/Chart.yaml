@@ -1,0 +1,5 @@
+apiVersion: v2
+name: external-dns
+description: Helm chart for ExternalDNS on AWS EKS
+version: 0.1.0
+appVersion: "0.13.6"

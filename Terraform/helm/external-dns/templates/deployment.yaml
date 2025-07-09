@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns
+  namespace: external-dns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: external-dns
+  template:
+    metadata:
+      labels:
+        app: external-dns
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+        - name: external-dns
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --source=service
+            - --source=ingress
+            - --provider={{ .Values.provider }}
+            - --registry={{ .Values.registry }}
+            - --policy={{ .Values.policy }}
+            - --aws-zone-type={{ .Values.aws.zoneType }}
+            - --txt-owner-id={{ .Values.txtOwnerId }}
+            - --domain-filter={{ .Values.domainFilters | join "," }}
+            - --log-level={{ .Values.logLevel }}
+            - --aws-region={{ .Values.aws.region }}

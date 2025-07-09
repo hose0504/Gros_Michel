@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: static-site
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: static-site
+  namespace: kube-system
+spec:
+  chart: ./static-site
+  targetNamespace: static-site
+  valuesContent: |-
+    replicaCount: 1
+    image:
+      repository: nginx
+      tag: stable
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+      port: 80
+    ingress:
+      enabled: true
+      host: your-domain.com

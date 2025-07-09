@@ -1,0 +1,27 @@
+provider: aws
+
+aws:
+  region: ap-northeast-2
+  zoneType: public
+  accessKey: ""
+  secretKey: ""
+
+domainFilters:
+  - grosmichel.click
+
+policy: sync
+registry: txt
+txtOwnerId: grosmichel-eks
+logLevel: debug
+
+serviceAccount:
+  create: true
+  name: external-dns
+
+rbac:
+  create: true
+
+image:
+  repository: registry.k8s.io/external-dns/external-dns
+  tag: v0.13.6
+  pullPolicy: IfNotPresent
