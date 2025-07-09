@@ -6,8 +6,8 @@
 set -e
 
 echo "🛠️  [1] 시스템 업데이트 및 필수 패키지 설치"
-yum update -y
-yum install -y java-17-amazon-corretto awscli curl wget tar gzip unzip shadow-utils sudo
+yum update -y --exclude=curl-minimal
+yum install -y --exclude=curl-minimal java-17-amazon-corretto awscli curl wget tar gzip unzip shadow-utils sudo
 
 echo "🧰 [2] kubectl 설치 (v1.29.2)"
 curl -LO "https://dl.k8s.io/release/v1.29.2/bin/linux/amd64/kubectl"
