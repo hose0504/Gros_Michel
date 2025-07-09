@@ -75,7 +75,7 @@ resource "aws_instance" "this" {
   iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
   tags = {
-    Name = "test"
+    Name = "grosmichel_EC2"
   }
 
   # ✅ 단일 GCP 기반 user_data.sh 사용
