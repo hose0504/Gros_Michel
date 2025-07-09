@@ -118,6 +118,17 @@ resource "aws_lb_target_group" "web_tg" {
   }
 }
 
+module "lambda_to_onprem" {
+  source = "./modules/lambda_to_onprem"
 
+  lambda_zip_path_exporter   = var.log_export_lambda_zip_path
+  s3_key_exporter            = var.log_export_s3_key
+  lambda_zip_path_forwarder  = var.onprem_lambda_zip_path
+  s3_key_forwarder           = var.onprem_s3_key
+
+  s3_code_bucket_name        = var.s3_code_bucket_name
+  s3_bucket                  = var.s3_bucket
+  onprem_api_url             = var.onprem_api_url
+}
 
 
