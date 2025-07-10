@@ -27,3 +27,8 @@ output "nat_eni_id" {
   description = "Primary network interface ID of the NAT instance"
   value       = aws_instance.nat.primary_network_interface_id
 }
+
+output "private_subnets" {
+  description = "List of private subnet IDs"
+  value       = [for s in aws_subnet.private : s.id]
+}

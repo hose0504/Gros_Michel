@@ -28,3 +28,13 @@ output "alb_dns_name" {
 output "web_tg_arn" {
   value = aws_lb_target_group.web_tg.arn
 }
+
+output "private_subnet_ids" {
+  description = "Private subnet IDs"
+  value       = module.network.private_subnets
+}
+
+output "public_subnet_ids" {
+  description = "Public subnet IDs"
+  value       = module.network.public_subnets
+}
