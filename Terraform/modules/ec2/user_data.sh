@@ -1,6 +1,6 @@
 #!/bin/bash
 ###############################################################################
-# Gros-Michel bastion – Amazon Linux + EKS 전용 user-data (ec2-user 버전, curl 설치 생략)
+# Gros-Michel bastion – Amazon Linux + EKS 전용 user-data (ec2-user 버전)
 ###############################################################################
 
 set -e
@@ -29,8 +29,11 @@ for i in {1..60}; do
   sleep 10
 done
 
-# kubeconfig 설정
-aws eks --region "$REGION" update-kubeconfig --name "$CLUSTER_NAME"
+# ✅ kubeconfig 경로 명시 + ec2-user 권한 설정
+mkdir -p /home/ec2-user/.kube
+aws eks --region "$REGION" update-kubeconfig --name "$CLUSTER_NAME" --kubeconfig /home/ec2-user/.kube/config
+export KUBECONFIG=/home/ec2-user/.kube/config
+chown -R ec2-user:ec2-user /home/ec2-user/.kube
 
 echo "📦 [4] Helm 설치"
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
