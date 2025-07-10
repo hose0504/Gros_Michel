@@ -15,7 +15,7 @@ chmod +x kubectl && mv kubectl /usr/local/bin/
 ln -s /usr/local/bin/kubectl /usr/bin/kubectl
 
 echo "📡 [3] EKS 연결"
-aws eks --region ap-northeast-2 update-kubeconfig --name gros-cluster
+aws eks --region ap-northeast-2 update-kubeconfig --name grosmichel-cluster
 
 echo "📦 [4] Helm 설치"
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
