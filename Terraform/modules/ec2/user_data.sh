@@ -15,7 +15,22 @@ chmod +x kubectl && mv kubectl /usr/local/bin/
 ln -s /usr/local/bin/kubectl /usr/bin/kubectl
 
 echo "📡 [3] EKS 연결"
-aws eks --region ap-northeast-2 update-kubeconfig --name grosmichel-cluster
+CLUSTER_NAME="grosmichel-cluster"
+REGION="ap-northeast-2"
+
+# EKS 클러스터가 ACTIVE 될 때까지 최대 10분 대기
+for i in {1..60}; do
+  STATUS=$(aws eks describe-cluster --region "$REGION" --name "$CLUSTER_NAME" --query "cluster.status" --output text)
+  echo "⏳ 현재 클러스터 상태: $STATUS"
+  if [ "$STATUS" == "ACTIVE" ]; then
+    echo "✅ 클러스터가 ACTIVE 상태입니다. 계속 진행합니다."
+    break
+  fi
+  sleep 10
+done
+
+# kubeconfig 설정
+aws eks --region "$REGION" update-kubeconfig --name "$CLUSTER_NAME"
 
 echo "📦 [4] Helm 설치"
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
@@ -31,12 +46,12 @@ echo "🚀 [6] Argo CD 설치"
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 for i in {1..5}; do
   kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml && break
-  echo '[WARN] ArgoCD install attempt ($i/5) failed. Retrying in 10 sec...'
+  echo "[WARN] ArgoCD install attempt ($i/5) failed. Retrying in 10 sec..."
   sleep 10
 done
 for i in {1..10}; do
   kubectl get crd applications.argoproj.io &>/dev/null && echo '✅ ArgoCD CRD ready' && break
-  echo '[WAIT] Still waiting for ArgoCD CRD... ($i/10)'
+  echo "[WAIT] Still waiting for ArgoCD CRD... ($i/10)"
   sleep 5
 done
 kubectl wait --for=condition=Established crd/applications.argoproj.io --timeout=60s || true
