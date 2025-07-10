@@ -68,12 +68,12 @@ resource "aws_route_table" "private" {
 
 # NAT 인스턴스
 resource "aws_instance" "nat" {
-  ami                    = var.nat_ami_id
-  instance_type          = "t3.micro"
-  subnet_id              = aws_subnet.public[0].id
+  ami                         = var.nat_ami_id
+  instance_type               = "t3.micro"
+  subnet_id                   = aws_subnet.public[0].id
   associate_public_ip_address = true
-  source_dest_check      = false
-  key_name               = var.key_name
+  source_dest_check           = false
+  key_name                    = var.key_name
 
   tags = {
     Name = "${var.vpc_name}-nat"

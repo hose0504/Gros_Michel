@@ -7,11 +7,11 @@ module "eks" {
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
   vpc_id          = var.vpc_id
-  subnet_ids      = var.private_subnets  # ⬅️ 프라이빗 서브넷으로 변경
+  subnet_ids      = var.private_subnets # ⬅️ 프라이빗 서브넷으로 변경
 
-  cluster_endpoint_public_access  = false  # ⬅️ 퍼블릭 비활성화
-  cluster_endpoint_private_access = true   # ⬅️ 프라이빗 활성화
-  enable_irsa                    = true
+  cluster_endpoint_public_access  = false # ⬅️ 퍼블릭 비활성화
+  cluster_endpoint_private_access = true  # ⬅️ 프라이빗 활성화
+  enable_irsa                     = true
 
   eks_managed_node_groups = {
     default = {
@@ -57,6 +57,6 @@ resource "aws_iam_role" "alb_controller_irsa" {
 }
 
 resource "aws_iam_role_policy_attachment" "alb_attach" {
-  role       = aws_iam_role.alb_controller_irsa.name  # ⬅️ 오타 수정
+  role       = aws_iam_role.alb_controller_irsa.name # ⬅️ 오타 수정
   policy_arn = "arn:aws:iam::aws:policy/AWSLoadBalancerControllerIAMPolicy"
 }

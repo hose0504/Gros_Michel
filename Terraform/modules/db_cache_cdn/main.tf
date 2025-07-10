@@ -4,8 +4,8 @@ resource "aws_cloudfront_distribution" "cdn" {
   default_root_object = "index.html"
 
   origin {
-    domain_name              = var.origin_domain_name
-    origin_id                = "shared-s3-origin"
+    domain_name = var.origin_domain_name
+    origin_id   = "shared-s3-origin"
 
     origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
   }

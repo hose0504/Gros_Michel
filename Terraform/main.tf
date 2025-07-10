@@ -16,7 +16,7 @@ module "network" {
   azs             = var.azs
   key_name        = var.key_name
   nat_ami_id      = var.nat_ami_id
-  domain_name      = var.domain_name
+  domain_name     = var.domain_name
 }
 
 module "storage" {
@@ -30,10 +30,10 @@ module "cdn" {
 }
 
 module "db_cache_cdn" {
-  source              = "./modules/db_cache_cdn"
-  origin_domain_name  = module.storage.bucket_domain_name
-  bucket_name         = module.storage.bucket_name
-  environment         = var.environment
+  source             = "./modules/db_cache_cdn"
+  origin_domain_name = module.storage.bucket_domain_name
+  bucket_name        = module.storage.bucket_name
+  environment        = var.environment
 }
 
 resource "aws_lb" "this" {
@@ -50,11 +50,11 @@ resource "aws_lb" "this" {
 }
 
 module "dns" {
-  source                  = "./modules/dns"
-  domain_name             = var.domain_name
-  alb_dns_name            = aws_lb.this.dns_name
-  alb_zone_id             = aws_lb.this.zone_id
-  cloudfront_domain_name  = module.db_cache_cdn.cloudfront_domain_name
+  source                 = "./modules/dns"
+  domain_name            = var.domain_name
+  alb_dns_name           = aws_lb.this.dns_name
+  alb_zone_id            = aws_lb.this.zone_id
+  cloudfront_domain_name = module.db_cache_cdn.cloudfront_domain_name
 }
 
 module "web_ec2" {
@@ -78,10 +78,10 @@ module "eks" {
   cluster_version = var.cluster_version
   vpc_id          = module.network.vpc_id
 
-  subnet_ids                         = module.network.private_subnet_ids
-  cluster_endpoint_public_access     = false
-  cluster_endpoint_private_access    = true
-  enable_irsa                        = true
+  subnet_ids                               = module.network.private_subnet_ids
+  cluster_endpoint_public_access           = false
+  cluster_endpoint_private_access          = true
+  enable_irsa                              = true
   enable_cluster_creator_admin_permissions = true
 
   eks_managed_node_groups = {
@@ -127,12 +127,12 @@ resource "aws_lb_target_group" "web_tg" {
 module "lambda_to_onprem" {
   source = "./modules/lambda_to_onprem"
 
-  lambda_zip_path_exporter   = var.log_export_lambda_zip_path
-  s3_key_exporter            = var.log_export_s3_key
-  lambda_zip_path_forwarder  = var.onprem_lambda_zip_path
-  s3_key_forwarder           = var.onprem_s3_key
+  lambda_zip_path_exporter  = var.log_export_lambda_zip_path
+  s3_key_exporter           = var.log_export_s3_key
+  lambda_zip_path_forwarder = var.onprem_lambda_zip_path
+  s3_key_forwarder          = var.onprem_s3_key
 
-  s3_code_bucket_name        = var.s3_code_bucket_name
-  s3_bucket                  = var.s3_bucket
-  onprem_api_url             = var.onprem_api_url
+  s3_code_bucket_name = var.s3_code_bucket_name
+  s3_bucket           = var.s3_bucket
+  onprem_api_url      = var.onprem_api_url
 }

@@ -34,8 +34,8 @@ resource "aws_route53_record" "cdn" {
   type    = "A"
 
   alias {
-    name                   = var.cloudfront_domain_name       # ex: d123abc4xyz.cloudfront.net
-    zone_id                = "Z2FDTNDATAQYW2"                 # CloudFront 고정 Zone ID
+    name                   = var.cloudfront_domain_name # ex: d123abc4xyz.cloudfront.net
+    zone_id                = "Z2FDTNDATAQYW2"           # CloudFront 고정 Zone ID
     evaluate_target_health = false
   }
 }

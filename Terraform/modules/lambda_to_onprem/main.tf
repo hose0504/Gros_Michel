@@ -7,7 +7,7 @@ resource "aws_iam_role" "lambda_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
-      Effect = "Allow",
+      Effect    = "Allow",
       Principal = { Service = "lambda.amazonaws.com" },
       Action    = "sts:AssumeRole"
     }]
@@ -28,8 +28,8 @@ resource "aws_s3_bucket_policy" "log_export_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid      = "AllowLambdaGetObjectFromSameAccount",
-        Effect   = "Allow",
+        Sid    = "AllowLambdaGetObjectFromSameAccount",
+        Effect = "Allow",
         Principal = {
           Service = "lambda.amazonaws.com"
         },
@@ -53,8 +53,8 @@ resource "aws_s3_bucket_policy" "code_bucket_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid      = "AllowLambdaToGetCode",
-        Effect   = "Allow",
+        Sid    = "AllowLambdaToGetCode",
+        Effect = "Allow",
         Principal = {
           Service = "lambda.amazonaws.com"
         },

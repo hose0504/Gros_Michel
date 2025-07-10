@@ -79,6 +79,12 @@ resource "aws_instance" "this" {
   vpc_security_group_ids = [aws_security_group.this.id]
   iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
+  metadata_options {
+    http_endpoint               = "enabled"  # IMDS 켜기
+    http_tokens                 = "optional" # IMDSv1 허용
+    http_put_response_hop_limit = 2          # hop 제한
+  }
+
   tags = {
     Name = "grosmichel_EC2"
   }
