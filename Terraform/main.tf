@@ -71,19 +71,15 @@ module "web_ec2" {
 
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
-  version = "20.8.4"
+  version         = "20.8.4"
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
   vpc_id          = module.network.vpc_id
   subnet_ids      = module.network.public_subnets
 
-  enable_cluster_creator_admin_permissions = true
-
-  # ✅ 퍼블릭 엔드포인트 설정 (수정됨)
-  access_config {
-    endpoint_public_access = true
-    public_access_cidrs    = ["0.0.0.0/0"]  # 필요 시 제한 가능
-  }
+  enable_cluster_creator_admin_permissions    = true
+  cluster_endpoint_public_access              = true
+  cluster_endpoint_public_access_cidrs        = ["0.0.0.0/0"]
 
   eks_managed_node_groups = {
     default = {
