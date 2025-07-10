@@ -23,6 +23,12 @@ resource "aws_iam_role_policy_attachment" "cwlogs_attach" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "describe_eks_attach" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = aws_iam_policy.eks_describe_cluster.arn
+}
+
+
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "${var.instance_name}-profile"
   role = aws_iam_role.ec2_role.name
