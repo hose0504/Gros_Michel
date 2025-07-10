@@ -13,10 +13,6 @@ resource "aws_iam_role" "ec2_role" {
   })
 }
 
-data "aws_iam_policy" "eks_describe_cluster" {
-  name = "DescribeEksCluster"
-}
-
 resource "aws_iam_role_policy_attachment" "eks_attach" {
   role       = aws_iam_role.ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
@@ -29,7 +25,7 @@ resource "aws_iam_role_policy_attachment" "cwlogs_attach" {
 
 resource "aws_iam_role_policy_attachment" "describe_eks_attach" {
   role       = aws_iam_role.ec2_role.name
-  policy_arn = data.aws_iam_policy.eks_describe_cluster.arn
+  policy_arn = "arn:aws:iam::187273601242:policy/DescribeEKSCluster"
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {
