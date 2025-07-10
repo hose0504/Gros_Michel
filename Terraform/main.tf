@@ -16,6 +16,7 @@ module "network" {
   azs             = var.azs
   key_name        = var.key_name
   nat_ami_id      = var.nat_ami_id
+  domain_name      = var.domain_name
 }
 
 module "storage" {
