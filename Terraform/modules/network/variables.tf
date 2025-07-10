@@ -35,6 +35,6 @@ variable "nat_ami_id" {
 }
 
 variable "domain_name" {
-  description = "Route 53용 도메인 이름"
+  description = "Route 53에서 사용할 도메인 이름"
   type        = string
 }
