@@ -75,11 +75,12 @@ module "eks" {
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
   vpc_id          = module.network.vpc_id
-  subnet_ids      = module.network.public_subnets
 
-  enable_cluster_creator_admin_permissions    = true
-  cluster_endpoint_public_access              = true
-  cluster_endpoint_public_access_cidrs        = ["0.0.0.0/0"]
+  subnet_ids                         = module.network.private_subnet_ids
+  cluster_endpoint_public_access     = false
+  cluster_endpoint_private_access    = true
+  enable_irsa                        = true
+  enable_cluster_creator_admin_permissions = true
 
   eks_managed_node_groups = {
     default = {
@@ -90,6 +91,7 @@ module "eks" {
     }
   }
 }
+
 
 module "nat_instance" {
   source           = "./modules/nat_instance"

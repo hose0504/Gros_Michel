@@ -25,3 +25,8 @@ variable "public_subnets" {
   description = "List of private subnet IDs for EKS"
   type        = list(string)
 }
+
+variable "private_subnets" {
+  type        = list(string)
+  description = "List of private subnet IDs for the EKS cluster"
+}
