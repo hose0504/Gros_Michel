@@ -13,19 +13,8 @@ resource "aws_iam_role" "ec2_role" {
   })
 }
 
-resource "aws_iam_policy" "eks_describe_cluster" {
-  name        = "DescribeEksCluster"
-  description = "Allow EC2 to describe EKS cluster"
-  policy      = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect   = "Allow",
-        Action   = ["eks:DescribeCluster"],
-        Resource = "arn:aws:eks:ap-northeast-2:187273601242:cluster/grosmichel-cluster"
-      }
-    ]
-  })
+data "aws_iam_policy" "eks_describe_cluster" {
+  name = "DescribeEksCluster"
 }
 
 resource "aws_iam_role_policy_attachment" "eks_attach" {
@@ -40,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "cwlogs_attach" {
 
 resource "aws_iam_role_policy_attachment" "describe_eks_attach" {
   role       = aws_iam_role.ec2_role.name
-  policy_arn = aws_iam_policy.eks_describe_cluster.arn
+  policy_arn = data.aws_iam_policy.eks_describe_cluster.arn
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {

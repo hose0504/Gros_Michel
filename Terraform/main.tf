@@ -131,4 +131,12 @@ module "lambda_to_onprem" {
   onprem_api_url             = var.onprem_api_url
 }
 
+resource "aws_s3_bucket" "shared" {
+  bucket        = "team5-shared-storage"
+  force_destroy = true
 
+  tags = {
+    Name        = "SharedStorage"
+    Environment = var.environment
+  }
+}
