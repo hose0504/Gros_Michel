@@ -33,3 +33,8 @@ variable "nat_ami_id" {
   description = "AMI ID for NAT instance (Amazon Linux 2 NAT용)"
   type        = string
 }
+
+variable "domain_name" {
+  description = "Route 53용 도메인 이름"
+  type        = string
+}

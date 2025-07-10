@@ -14,7 +14,8 @@ module "network" {
   public_subnets  = var.public_subnets
   private_subnets = var.private_subnets
   azs             = var.azs
-  domain_name     = var.domain_name
+  key_name        = var.key_name
+  nat_ami_id      = var.nat_ami_id
 }
 
 module "storage" {
