@@ -29,11 +29,15 @@ for i in {1..60}; do
   sleep 10
 done
 
-# ✅ kubeconfig 경로 명시 + ec2-user 권한 설정
+# kubeconfig 설정 및 ec2-user에게 권한 부여
 mkdir -p /home/ec2-user/.kube
 aws eks --region "$REGION" update-kubeconfig --name "$CLUSTER_NAME" --kubeconfig /home/ec2-user/.kube/config
-export KUBECONFIG=/home/ec2-user/.kube/config
 chown -R ec2-user:ec2-user /home/ec2-user/.kube
+
+# KUBECONFIG 환경변수 root 및 ec2-user에 영구 반영
+echo "export KUBECONFIG=/home/ec2-user/.kube/config" >> /etc/profile.d/kubeconfig.sh
+echo "export KUBECONFIG=/home/ec2-user/.kube/config" >> /home/ec2-user/.bashrc
+export KUBECONFIG=/home/ec2-user/.kube/config
 
 echo "📦 [4] Helm 설치"
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
