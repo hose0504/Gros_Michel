@@ -3,7 +3,7 @@ resource "random_id" "bucket" {
 }
 
 resource "aws_s3_bucket" "shared" {
-  bucket        = "team5-shared-storage-${random_id.bucket.hex}"
+  bucket        = "team5-shared-storage"
   force_destroy = true
 
   tags = {
