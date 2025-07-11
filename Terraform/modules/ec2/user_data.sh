@@ -42,6 +42,17 @@ export KUBECONFIG=/home/ec2-user/.kube/config
 echo "📦 [4] Helm 설치"
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
+echo "⌛ [4.9] EKS 노드가 Ready 상태인지 확인 중..."
+for i in {1..60}; do
+  READY_NODE_COUNT=$(kubectl get nodes --no-headers 2>/dev/null | grep -c " Ready")
+  echo "⏳ 현재 Ready 노드 수: $READY_NODE_COUNT"
+  if [ "$READY_NODE_COUNT" -gt 0 ]; then
+    echo "✅ 노드가 준비되었습니다. 계속 진행합니다."
+    break
+  fi
+  sleep 10
+done
+
 echo "🌐 [5] Ingress NGINX 설치"
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
