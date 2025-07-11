@@ -11,7 +11,7 @@ azs             = ["ap-northeast-2a", "ap-northeast-2c"]
 
 # NAT 인스턴스 설정 (✅ 필수)
 nat_ami_id = "ami-01ad0c7a4930f0e43" # 또는 최신 Amazon Linux NAT AMI
-key_name   = "your-keypair-name"
+key_name   = "key1"
 
 # 도메인 및 S3
 domain_name        = "grosmichel.click"

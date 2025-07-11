@@ -17,3 +17,4 @@ output "oidc_provider_arn" {
 output "alb_irsa_role_arn" {
   value = aws_iam_role.alb_irsa.arn
 }
+
