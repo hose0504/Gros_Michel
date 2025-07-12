@@ -17,13 +17,3 @@ output "private_route_table_id" {
   description = "ID of the private route table"
   value       = aws_route_table.private.id
 }
-
-output "nat_instance_id" {
-  description = "ID of the NAT instance"
-  value       = aws_instance.nat.id
-}
-
-output "nat_eni_id" {
-  description = "Primary network interface ID of the NAT instance"
-  value       = aws_instance.nat.primary_network_interface_id
-}
