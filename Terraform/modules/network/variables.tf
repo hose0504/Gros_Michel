@@ -38,3 +38,8 @@ variable "domain_name" {
   description = "Route 53에서 사용할 도메인 이름"
   type        = string
 }
+
+variable "cluster_name" {
+  description = "EKS cluster name for subnet tagging"
+  type        = string
+}

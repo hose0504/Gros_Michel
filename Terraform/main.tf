@@ -17,6 +17,7 @@ module "network" {
   key_name        = var.key_name
   nat_ami_id      = var.nat_ami_id
   domain_name     = var.domain_name
+  cluster_name   = var.cluster_name
 }
 
 module "storage" {
