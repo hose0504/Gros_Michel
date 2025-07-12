@@ -8,17 +8,18 @@ terraform {
 }
 
 module "network" {
-  source          = "./modules/network"
-  vpc_name        = var.vpc_name
-  vpc_cidr_block  = var.vpc_cidr_block
-  public_subnets  = var.public_subnets
-  private_subnets = var.private_subnets
-  azs             = var.azs
-  key_name        = var.key_name
-  nat_ami_id      = var.nat_ami_id
-  domain_name     = var.domain_name
-  cluster_name   = var.cluster_name
+  source           = "./modules/network"
+  vpc_name         = var.vpc_name
+  vpc_cidr_block   = var.vpc_cidr_block
+  public_subnets   = var.public_subnets
+  private_subnets  = var.private_subnets
+  azs              = var.azs
+  key_name         = var.key_name
+  nat_instance_eni = var.nat_instance_eni
+  domain_name      = var.domain_name
+  cluster_name     = var.cluster_name
 }
+
 
 module "storage" {
   source      = "./modules/storage"

@@ -1,47 +1,29 @@
-variable "instance_name" {
-  description = "EC2 인스턴스 및 보안 그룹 이름"
+variable "vpc_cidr_block" {
+  description = "CIDR block for the VPC"
   type        = string
 }
 
-variable "ami_id" {
-  description = "EC2 인스턴스에 사용할 AMI ID"
+variable "vpc_name" {
+  description = "Name tag for the VPC and related resources"
   type        = string
 }
 
-variable "instance_type" {
-  description = "EC2 인스턴스 타입"
-  type        = string
+variable "public_subnets" {
+  description = "List of CIDR blocks for public subnets"
+  type        = list(string)
 }
 
-variable "key_name" {
-  description = "접속을 위한 키 페어 이름"
-  type        = string
+variable "private_subnets" {
+  description = "List of CIDR blocks for private subnets"
+  type        = list(string)
 }
 
-variable "vpc_id" {
-  description = "보안 그룹이 위치할 VPC ID"
-  type        = string
+variable "azs" {
+  description = "List of Availability Zones"
+  type        = list(string)
 }
 
-variable "subnet_id" {
-  description = "EC2 인스턴스가 위치할 Subnet ID"
+variable "cluster_name" {
+  description = "EKS Cluster Name for subnet tagging"
   type        = string
-}
-
-variable "allow_all_access" {
-  description = "모든 포트 허용 여부 (보안 위험, true 시 전체 포트 개방)"
-  type        = bool
-  default     = false
-}
-
-variable "private_key_path" {
-  description = "Private key path for SSH"
-  type        = string
-  default     = ""
-}
-
-variable "private_key_raw" {
-  description = "Raw private key content"
-  type        = string
-  default     = ""
 }

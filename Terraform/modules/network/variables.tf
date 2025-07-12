@@ -25,12 +25,12 @@ variable "azs" {
 }
 
 variable "key_name" {
-  description = "EC2 key pair name to access the NAT instance"
+  description = "EC2 key pair name to access resources"
   type        = string
 }
 
-variable "nat_ami_id" {
-  description = "AMI ID for NAT instance (Amazon Linux 2 NAT용)"
+variable "nat_instance_eni" {
+  description = "ENI ID of the NAT instance (created externally)"
   type        = string
 }
 

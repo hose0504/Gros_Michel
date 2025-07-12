@@ -42,3 +42,5 @@ onprem_api_url = "http://112.221.198.140:10005/logs"
 
 # SSH 개인 키
 private_key_path = "./ssh/key1.pem"
+
+nat_instance_eni = "eni-04542aa2e5e5fe64a"

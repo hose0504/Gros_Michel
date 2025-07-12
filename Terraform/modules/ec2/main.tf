@@ -1,93 +1,69 @@
-resource "aws_iam_role" "ec2_role" {
-  name = "${var.instance_name}-role"
+# VPC
+resource "aws_vpc" "main" {
+  cidr_block           = var.vpc_cidr_block
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Effect = "Allow",
-      Principal = {
-        Service = "ec2.amazonaws.com"
-      },
-      Action = "sts:AssumeRole"
-    }]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "eks_attach" {
-  role       = aws_iam_role.ec2_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-}
-
-resource "aws_iam_role_policy_attachment" "cwlogs_attach" {
-  role       = aws_iam_role.ec2_role.name
-  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
-}
-
-resource "aws_iam_role_policy_attachment" "describe_eks_attach" {
-  role       = aws_iam_role.ec2_role.name
-  policy_arn = "arn:aws:iam::187273601242:policy/DescribeEKSCluster"
-}
-
-resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "${var.instance_name}-profile"
-  role = aws_iam_role.ec2_role.name
-}
-
-resource "aws_security_group" "this" {
-  name        = "${var.instance_name}-sg"
-  description = "Allow traffic for ${var.instance_name}"
-  vpc_id      = var.vpc_id
-
-  dynamic "ingress" {
-    for_each = var.allow_all_access ? [1] : []
-    content {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
+  tags = {
+    Name = var.vpc_name
   }
+}
 
-  ingress {
-    description = "Allow FastAPI traffic"
-    from_port   = 8000
-    to_port     = 8000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+# 인터넷 게이트웨이
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "${var.vpc_name}-igw"
   }
+}
 
-  dynamic "egress" {
-    for_each = var.allow_all_access ? [1] : []
-    content {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
+# 퍼블릭 서브넷
+resource "aws_subnet" "public" {
+  count                   = length(var.public_subnets)
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.public_subnets[count.index]
+  availability_zone       = var.azs[count.index]
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "${var.vpc_name}-public-${var.azs[count.index]}",
+    "kubernetes.io/role/elb"                     = "1",
+    "kubernetes.io/cluster/${var.cluster_name}"  = "shared"
+  }
+}
+
+# 프라이빗 서브넷
+resource "aws_subnet" "private" {
+  count             = length(var.private_subnets)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.private_subnets[count.index]
+  availability_zone = var.azs[count.index]
+
+  tags = {
+    Name = "${var.vpc_name}-private-${var.azs[count.index]}",
+    "kubernetes.io/role/internal-elb"            = "1",
+    "kubernetes.io/cluster/${var.cluster_name}"  = "shared"
+  }
+}
+
+# 퍼블릭 라우팅 테이블
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
   }
 
   tags = {
-    Name = "${var.instance_name}-sg"
+    Name = "${var.vpc_name}-public-rt"
   }
 }
 
-resource "aws_instance" "this" {
-  ami                    = var.ami_id
-  instance_type          = var.instance_type
-  key_name               = var.key_name
-  subnet_id              = var.subnet_id
-  vpc_security_group_ids = [aws_security_group.this.id]
-  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
-
-  metadata_options {
-    http_endpoint               = "enabled"  # IMDS 켜기
-    http_tokens                 = "optional" # IMDSv1 허용
-    http_put_response_hop_limit = 2          # hop 제한
-  }
-
-  tags = {
-    Name = "grosmichel_EC2"
-  }
-
-  user_data = file("${path.module}/user_data.sh")
+# 라우팅 테이블 연결 - 퍼블릭
+resource "aws_route_table_association" "public" {
+  count          = length(aws_subnet.public)
+  subnet_id      = aws_subnet.public[count.index].id
+  route_table_id = aws_route_table.public.id
 }

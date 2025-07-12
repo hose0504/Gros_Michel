@@ -70,25 +70,13 @@ resource "aws_route_table" "private" {
   }
 }
 
-# NAT 인스턴스
-resource "aws_instance" "nat" {
-  ami                         = var.nat_ami_id
-  instance_type               = "t3.micro"
-  subnet_id                   = aws_subnet.public[0].id
-  associate_public_ip_address = true
-  source_dest_check           = false
-  key_name                    = var.key_name
+# ❌ 기존 NAT 인스턴스 제거
 
-  tags = {
-    Name = "${var.vpc_name}-nat"
-  }
-}
-
-# NAT → 프라이빗 서브넷 라우팅
+# ✅ NAT → 프라이빗 서브넷 라우팅 (조장 NAT 인스턴스 참조)
 resource "aws_route" "private_nat_route" {
   route_table_id         = aws_route_table.private.id
   destination_cidr_block = "0.0.0.0/0"
-  network_interface_id   = aws_instance.nat.primary_network_interface_id
+  network_interface_id   = var.nat_instance_eni
 }
 
 # 라우팅 테이블 연결
