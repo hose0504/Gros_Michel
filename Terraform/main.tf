@@ -71,6 +71,14 @@ module "web_ec2" {
 
   private_key_path = var.private_key_path
   private_key_raw  = var.private_key_raw
+
+ vpc_name         = var.vpc_name
+  vpc_cidr_block   = var.vpc_cidr_block
+  public_subnets   = var.public_subnets
+  private_subnets  = var.private_subnets
+  azs              = var.azs
+  cluster_name     = var.cluster_name
+
 }
 
 module "eks" {
