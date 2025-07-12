@@ -64,22 +64,21 @@ module "web_ec2" {
   instance_name    = "web-ec2"
   ami_id           = "ami-0e967ff96936c0c0c"
   instance_type    = "t3.small"
-  key_name         = "key1"
+  key_name         = var.key_name
   allow_all_access = true
   subnet_id        = module.network.public_subnet_ids[0]
   vpc_id           = module.network.vpc_id
-
   private_key_path = var.private_key_path
   private_key_raw  = var.private_key_raw
 
- vpc_name         = var.vpc_name
-  vpc_cidr_block   = var.vpc_cidr_block
-  public_subnets   = var.public_subnets
-  private_subnets  = var.private_subnets
-  azs              = var.azs
-  cluster_name     = var.cluster_name
-
+    vpc_name           = var.vpc_name
+  public_subnets     = var.public_subnets
+  private_subnets    = var.private_subnets
+  vpc_cidr_block     = var.vpc_cidr_block
+  azs                = var.azs
+  cluster_name       = var.cluster_name
 }
+
 
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"

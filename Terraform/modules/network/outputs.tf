@@ -20,15 +20,10 @@ output "private_route_table_id" {
 
 output "nat_instance_id" {
   description = "ID of the NAT instance"
-  value       = aws_instance.nat_instance.id
+  value       = aws_instance.nat.id
 }
 
 output "nat_eni_id" {
   description = "Primary network interface ID of the NAT instance"
-  value       = aws_instance.nat_instance.primary_network_interface_id
-}
-
-output "private_subnets" {
-  description = "List of private subnet IDs"
-  value       = [for s in aws_subnet.private : s.id]
+  value       = aws_instance.nat.primary_network_interface_id
 }
