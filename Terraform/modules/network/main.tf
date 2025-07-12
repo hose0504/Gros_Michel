@@ -27,7 +27,9 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.vpc_name}-public-${var.azs[count.index]}"
+    Name                                        = "${var.vpc_name}-public-${var.azs[count.index]}"
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                    = "1"
   }
 }
 
@@ -39,7 +41,9 @@ resource "aws_subnet" "private" {
   availability_zone = var.azs[count.index]
 
   tags = {
-    Name = "${var.vpc_name}-private-${var.azs[count.index]}"
+    Name                                        = "${var.vpc_name}-private-${var.azs[count.index]}"
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"           = "1"
   }
 }
 
@@ -80,7 +84,7 @@ resource "aws_instance" "nat" {
   }
 }
 
-# ✅ NAT 인스턴스 ENI 정보 참조
+# NAT → 프라이빗 서브넷 라우팅
 resource "aws_route" "private_nat_route" {
   route_table_id         = aws_route_table.private.id
   destination_cidr_block = "0.0.0.0/0"
