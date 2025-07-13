@@ -149,8 +149,5 @@ variable "bucket_name" {
   type        = string
 }
 
-variable "nat_instance_eni" {
-  description = "ENI ID of the pre-created NAT instance"
-  type        = string
-}
+
 
