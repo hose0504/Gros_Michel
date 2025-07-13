@@ -2,15 +2,28 @@ provider "aws" {
   region = var.region
 }
 
+module "network" {
+  source           = "./modules/network"
+  vpc_name         = var.vpc_name
+  vpc_cidr_block   = var.vpc_cidr_block
+  public_subnets   = var.public_subnets
+  private_subnets  = var.private_subnets
+  azs              = var.azs
+  key_name         = var.key_name
+  nat_instance_eni = var.nat_instance_eni
+  domain_name      = var.domain_name
+  cluster_name     = var.cluster_name
+}
+
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
-  vpc_id          = var.vpc_id
-  subnet_ids      = var.private_subnets # ⬅️ 프라이빗 서브넷으로 변경
+  vpc_id          = module.network.vpc_id
+  subnet_ids      = module.network.private_subnet_ids
 
-  cluster_endpoint_public_access  = false # ⬅️ 퍼블릭 비활성화
-  cluster_endpoint_private_access = true  # ⬅️ 프라이빗 활성화
+  cluster_endpoint_public_access  = false
+  cluster_endpoint_private_access = true
   enable_irsa                     = true
 
   eks_managed_node_groups = {
@@ -57,6 +70,6 @@ resource "aws_iam_role" "alb_controller_irsa" {
 }
 
 resource "aws_iam_role_policy_attachment" "alb_attach" {
-  role       = aws_iam_role.alb_controller_irsa.name # ⬅️ 오타 수정
+  role       = aws_iam_role.alb_controller_irsa.name
   policy_arn = "arn:aws:iam::aws:policy/AWSLoadBalancerControllerIAMPolicy"
 }
