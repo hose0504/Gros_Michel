@@ -2,25 +2,37 @@ provider "aws" {
   region = var.region
 }
 
-module "network" {
-  source           = "./modules/network"
-  vpc_name         = var.vpc_name
-  vpc_cidr_block   = var.vpc_cidr_block
-  public_subnets   = var.public_subnets
-  private_subnets  = var.private_subnets
-  azs              = var.azs
-  key_name         = var.key_name
-  nat_instance_eni = var.nat_instance_eni
-  domain_name      = var.domain_name
-  cluster_name     = var.cluster_name
+resource "aws_security_group" "eks_node_sg" {
+  name        = "eks-node-sg"
+  description = "Allow communication between EKS nodes and cluster"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    description     = "Allow all traffic from EKS cluster SG"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    security_groups = [module.eks.cluster_security_group_id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "eks-node-sg"
+  }
 }
 
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
-  vpc_id          = module.network.vpc_id
-  subnet_ids      = module.network.private_subnet_ids
+  vpc_id          = var.vpc_id
+  subnet_ids      = var.private_subnets
 
   cluster_endpoint_public_access  = false
   cluster_endpoint_private_access = true
@@ -28,10 +40,11 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      desired_size   = 1
-      max_size       = 3
-      min_size       = 1
-      instance_types = ["t3.small"]
+      desired_size           = 1
+      max_size               = 3
+      min_size               = 1
+      instance_types         = ["t3.small"]
+      vpc_security_group_ids = [aws_security_group.eks_node_sg.id] # 👈 SG 직접 지정!
     }
   }
 
