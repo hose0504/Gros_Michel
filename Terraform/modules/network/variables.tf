@@ -30,8 +30,7 @@ variable "key_name" {
 }
 
 variable "nat_instance_eni" {
-  description = "ENI ID of the NAT instance (created externally)"
-  type        = string
+  type = string
 }
 
 variable "domain_name" {
@@ -43,5 +42,4 @@ variable "cluster_name" {
   description = "EKS cluster name for subnet tagging"
   type        = string
 }
-
 

@@ -15,9 +15,9 @@ module "network" {
   private_subnets  = var.private_subnets
   azs              = var.azs
   key_name         = var.key_name
-  nat_instance_eni = var.nat_instance_eni
   domain_name      = var.domain_name
   cluster_name     = var.cluster_name
+  nat_instance_eni = module.nat_instance.nat_instance_eni
 }
 
 

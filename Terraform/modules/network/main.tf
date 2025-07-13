@@ -75,6 +75,8 @@ resource "aws_route" "private_nat_route" {
   route_table_id         = aws_route_table.private.id
   destination_cidr_block = "0.0.0.0/0"
   network_interface_id   = var.nat_instance_eni
+
+  depends_on = [aws_route_table.private]
 }
 
 # 라우팅 테이블 연결
