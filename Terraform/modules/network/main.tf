@@ -70,9 +70,7 @@ resource "aws_route_table" "private" {
   }
 }
 
-# ❌ 기존 NAT 인스턴스 제거
-
-# ✅ NAT → 프라이빗 서브넷 라우팅 (조장 NAT 인스턴스 참조)
+# ✅ NAT 인스턴스 기반 라우팅
 resource "aws_route" "private_nat_route" {
   route_table_id         = aws_route_table.private.id
   destination_cidr_block = "0.0.0.0/0"
