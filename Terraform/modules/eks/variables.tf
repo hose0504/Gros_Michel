@@ -30,3 +30,8 @@ variable "private_subnets" {
   type        = list(string)
   description = "List of private subnet IDs for the EKS cluster"
 }
+
+variable "my_public_ip" {
+  description = "Your public IP address for SSH access to EC2 and EKS API endpoint in CIDR format (e.g., 203.0.113.10/32)"
+  type        = string
+}

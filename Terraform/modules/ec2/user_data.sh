@@ -5,15 +5,8 @@
 
 set -e
 
-ACCESS_KEY="${ACCESS_KEY}"
-SECRET_KEY="${SECRET_KEY}"
 CLUSTER_NAME="grosmichel-cluster"
 REGION="ap-northeast-2"
-
-echo "🔐 [0] AWS CLI 구성 (admin 프로파일)"
-sudo -u ec2-user aws configure set aws_access_key_id "${ACCESS_KEY}" --profile admin
-sudo -u ec2-user aws configure set aws_secret_access_key "${SECRET_KEY}" --profile admin
-sudo -u ec2-user aws configure set region "${REGION}" --profile admin
 
 echo "🛠️  [1] 시스템 업데이트 및 필수 패키지 설치"
 yum update -y
@@ -27,10 +20,9 @@ chown ec2-user:ec2-user /home/ec2-user/bin/kubectl
 ln -s /home/ec2-user/bin/kubectl /usr/local/bin/kubectl || true
 ln -s /home/ec2-user/bin/kubectl /usr/bin/kubectl || true
 
-echo "📡 [3] EKS 연결 (admin 프로파일 사용)"
-# 최대 10분간 ACTIVE 상태 대기
+echo "📡 [3] EKS 연결"
 for i in {1..60}; do
-  STATUS=$(aws eks describe-cluster --region "$REGION" --name "$CLUSTER_NAME" --profile admin --query "cluster.status" --output text)
+  STATUS=$(aws eks describe-cluster --region "$REGION" --name "$CLUSTER_NAME" --query "cluster.status" --output text)
   echo "⏳ 현재 클러스터 상태: $STATUS"
   if [ "$STATUS" == "ACTIVE" ]; then
     echo "✅ 클러스터가 ACTIVE 상태입니다."
@@ -40,7 +32,7 @@ for i in {1..60}; do
 done
 
 mkdir -p /home/ec2-user/.kube
-sudo -u ec2-user aws eks --region "$REGION" update-kubeconfig --name "$CLUSTER_NAME" --profile admin --kubeconfig /home/ec2-user/.kube/config
+aws eks --region "$REGION" update-kubeconfig --name "$CLUSTER_NAME" --kubeconfig /home/ec2-user/.kube/config
 chown -R ec2-user:ec2-user /home/ec2-user/.kube
 
 echo "export KUBECONFIG=/home/ec2-user/.kube/config" >> /etc/profile.d/kubeconfig.sh
