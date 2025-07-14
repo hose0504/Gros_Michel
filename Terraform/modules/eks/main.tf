@@ -1,70 +1,69 @@
-provider "aws" {
-  region = var.region
-}
-
-resource "aws_security_group" "eks_node_sg" {
-  name        = "eks-node-sg"
-  description = "Allow communication between EKS nodes and cluster"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    description     = "Allow all traffic from EKS cluster SG"
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    security_groups = [module.eks.cluster_security_group_id]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "eks-node-sg"
-  }
-}
-
 module "eks" {
-  source          = "terraform-aws-modules/eks/aws"
+  source  = "terraform-aws-modules/eks/aws"
+
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
-  vpc_id          = var.vpc_id
-  subnet_ids      = var.public_subnets
-
-  cluster_endpoint_public_access  = true
-  cluster_endpoint_private_access = true
-  enable_irsa                     = true
+  vpc_id          = module.vpc.vpc_id
+  subnet_ids      = module.vpc.private_subnets
 
   eks_managed_node_groups = {
     default = {
-      desired_size           = 1
-      max_size               = 3
-      min_size               = 1
       instance_types         = ["t3.small"]
-      vpc_security_group_ids = [aws_security_group.eks_node_sg.id] # 👈 SG 직접 지정!
+      min_size               = 1
+      max_size               = 3
+      desired_size           = 1
+      vpc_security_group_ids = [module.eks_node_sg.security_group_id]
     }
   }
 
+  cluster_endpoint_public_access  = true
+  cluster_endpoint_private_access = true
+
+  cluster_additional_security_group_ids = [module.eks_cluster_sg.security_group_id]
   enable_cluster_creator_admin_permissions = true
 }
 
-data "aws_eks_cluster" "main" {
-  name = module.eks.cluster_name
+module "eks_cluster_sg" {
+  source  = "terraform-aws-modules/security-group/aws"
+  name    = "eks-cluster-sg"
+  vpc_id  = module.vpc.vpc_id
+
+  ingress_with_self = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+    }
+  ]
+
+  egress_rules = ["all-all"]
 }
 
-data "aws_eks_cluster_auth" "main" {
-  name = module.eks.cluster_name
+module "eks_node_sg" {
+  source  = "terraform-aws-modules/security-group/aws"
+  name    = "eks-node-sg"
+  vpc_id  = module.vpc.vpc_id
+
+  ingress_with_source_security_group_id = [
+    {
+      from_port                = 0
+      to_port                  = 0
+      protocol                 = "-1"
+      source_security_group_id = module.eks_cluster_sg.security_group_id
+    }
+  ]
+
+  egress_rules = ["all-all"]
 }
 
+# IRSA 설정
 data "aws_iam_openid_connect_provider" "oidc" {
   url = module.eks.cluster_oidc_issuer_url
 }
 
 resource "aws_iam_role" "alb_controller_irsa" {
   name = "alb-controller-irsa"
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
