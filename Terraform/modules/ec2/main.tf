@@ -105,7 +105,7 @@ resource "aws_instance" "this" {
     http_put_response_hop_limit = 2
   }
 
-  user_data = file("${path.root}/user_data.sh")
+  user_data = file("${path.root}/user-data.sh")
 
   tags = {
     Name = "grosmichel_EC2"
