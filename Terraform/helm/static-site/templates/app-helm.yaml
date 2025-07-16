@@ -1,25 +1,18 @@
-apiVersion: v1
-kind: Namespace
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
   name: static-site
----
-apiVersion: helm.cattle.io/v1
-kind: HelmChart
-metadata:
-  name: static-site
-  namespace: kube-system
+  namespace: argocd
 spec:
-  chart: ./static-site
-  targetNamespace: static-site
-  valuesContent: |-
-    replicaCount: 1
-    image:
-      repository: nginx
-      tag: stable
-      pullPolicy: IfNotPresent
-    service:
-      type: ClusterIP
-      port: 80
-    ingress:
-      enabled: true
-      host: your-domain.com
+  project: default
+  source:
+    repoURL: https://github.com/your-username/your-repo.git
+    targetRevision: HEAD
+    path: static-site
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: static-site
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
