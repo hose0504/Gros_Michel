@@ -1,22 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "static-site.fullname" . }}
+  name: web-deployment
   labels:
-    app: {{ include "static-site.name" . }}
+    app: web
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 2
   selector:
     matchLabels:
-      app: {{ include "static-site.name" . }}
+      app: web
   template:
     metadata:
       labels:
-        app: {{ include "static-site.name" . }}
+        app: web
     spec:
       containers:
-        - name: {{ include "static-site.name" . }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - containerPort: 80
+      - name: web
+        image: jwh0722/web_v1:latest
+        ports:
+        - containerPort: 80

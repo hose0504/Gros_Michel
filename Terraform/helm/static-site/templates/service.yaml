@@ -1,14 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "static-site.fullname" . }}
-  labels:
-    app: {{ include "static-site.name" . }}
+  name: web-service
 spec:
-  type: ClusterIP
   selector:
-    app: {{ include "static-site.name" . }}
+    app: web
   ports:
-    - port: 80
+    - protocol: TCP
+      port: 80
       targetPort: 80
-      protocol: TCP
+  type: ClusterIP

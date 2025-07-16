@@ -33,6 +33,12 @@ jobs:
           echo "${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" > ~/.ssh/key1.pem
           chmod 600 ~/.ssh/key1.pem
 
+      - name: envsubst 로 user-data.sh 템플릿 치환
+        run: |
+          export ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY_ID }}"
+          export SECRET_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+          envsubst < user-data.sh.tpl > user-data.sh
+
       - name: Terraform Init
         run: terraform init
 
@@ -41,6 +47,7 @@ jobs:
           terraform plan \
             -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
             -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -var="private_key_raw=${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" \
             -var-file="terraform.tfvars"
 
       - name: Terraform Apply
@@ -48,7 +55,6 @@ jobs:
           terraform apply -auto-approve \
             -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
             -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-            -var="private_key_raw=${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" \
             -var="private_key_raw=${{ secrets.EC2_PRIVATE_KEY_PLAIN }}" \
             -var-file="terraform.tfvars"
 
