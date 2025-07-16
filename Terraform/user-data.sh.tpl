@@ -9,8 +9,8 @@ sudo -u ec2-user aws configure set aws_secret_access_key "$SECRET_KEY" --profile
 sudo -u ec2-user aws configure set region ap-northeast-2 --profile Terraform-user
 
 # 1. EKS 클러스터 생성 대기 (고정 대기)
-echo "⌛ [1] EKS 클러스터 생성 대기 중 (15분)"
-sleep 900
+echo "⌛ [1] EKS 클러스터 생성 대기 중 (10분)"
+sleep 600
 
 # 2. kubectl 설치
 echo "📦 [2] kubectl 설치"
