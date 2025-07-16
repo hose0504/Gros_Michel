@@ -1,14 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: static-site
+  name: grosmichel-site
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/your-username/your-repo.git
+    repoURL: https://github.com/hose0504/Gros_Michel.git
     targetRevision: HEAD
-    path: static-site
+    path: Terraform/helm/static-site
+    helm:
+      valueFiles:
+        - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: static-site
@@ -16,3 +19,5 @@ spec:
     automated:
       selfHeal: true
       prune: true
+    syncOptions:
+      - CreateNamespace=true
