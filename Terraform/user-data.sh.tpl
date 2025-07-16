@@ -8,7 +8,7 @@ sudo -u ec2-user aws configure set aws_access_key_id "$ACCESS_KEY" --profile Ter
 sudo -u ec2-user aws configure set aws_secret_access_key "$SECRET_KEY" --profile Terraform-user
 sudo -u ec2-user aws configure set region ap-northeast-2 --profile Terraform-user
 
-# 1. EKS 클러스터 생성 대기 (고정 대기 시간으로)
+# 1. EKS 클러스터 생성 대기 (고정 대기)
 echo "⌛ [1] EKS 클러스터 생성 대기 중 (15분)"
 sleep 900
 
@@ -39,7 +39,7 @@ sudo -u ec2-user helm install ingress-nginx ingress-nginx/ingress-nginx \
 
 # 6. Argo CD 설치
 echo "🚀 [6] Argo CD 설치"
-sudo -u ec2-user kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+sudo -u ec2-user kubectl create namespace argocd --dry-run=client -o yaml | sudo -u ec2-user kubectl apply -f -
 for i in {1..5}; do
   sudo -u ec2-user kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml && break
   echo "[WARN] ArgoCD 설치 실패 ($i/5). 10초 후 재시도..."
