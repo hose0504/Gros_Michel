@@ -6,18 +6,16 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/hose0504/Gros_Michel.git
+    repoURL: https://github.com/hose504/Gros_Michel.git  # ✅ GCP 말고 AWS용 레포!
     targetRevision: HEAD
-    path: Terraform/helm/static-site
+    path: Terraform/helm/static-site  # ✅ 경로도 AWS 디렉토리로
     helm:
       valueFiles:
         - values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: static-site
+    namespace: default
   syncPolicy:
     automated:
-      selfHeal: true
       prune: true
-    syncOptions:
-      - CreateNamespace=true
+      selfHeal: true

@@ -1,18 +1,19 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: web-ingress
+  name: {{ include "static-site.fullname" . }}-ingress
   annotations:
-    kubernetes.io/ingress.class: gce  # 명시 안 해도 되지만 명확히 하려면 추가
+    kubernetes.io/ingress.class: nginx
 spec:
   rules:
-    - host: grosmichel.click
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
-          - path: /template
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: web-service
+                name: {{ include "static-site.fullname" . }}
                 port:
-                  number: 80
+                  number: {{ .Values.service.port }}
+  tls: []
