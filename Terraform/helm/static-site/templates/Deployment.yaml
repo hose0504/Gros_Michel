@@ -1,21 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-deployment
+  name: {{ .Release.Name }}-deployment
   labels:
-    app: web
+    app: {{ .Chart.Name }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: web
+      app: {{ .Chart.Name }}
   template:
     metadata:
       labels:
-        app: web
+        app: {{ .Chart.Name }}
     spec:
       containers:
-      - name: web
-        image: jwh0722/web_v1:latest
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 80
