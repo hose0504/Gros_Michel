@@ -7,7 +7,7 @@ image:
 
 service:
   name: grosmichel-site-service
-  type: clusterIP
+  type: Nodeport
   port: 80
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
