@@ -54,7 +54,7 @@ sudo -u ec2-user kubectl wait --for=condition=Established crd/applications.argop
 
 # 7. ArgoCD 앱 배포
 echo "📁 [7] ArgoCD 앱 배포"
-sudo -u ec2-user wget -qO /home/ec2-user/app-helm.yaml https://raw.githubusercontent.com/hose0504/Gros_Michel_gcp/main/gcp/helm/static-site/templates/app-helm.yaml
+sudo -u ec2-user wget -qO /home/ec2-user/app-helm.yaml https://raw.githubusercontent.com/hose0504/Gros_Michel/main/Terraform/helm/static-site/templates/app-helm.yaml
 sudo -u ec2-user kubectl apply -f /home/ec2-user/app-helm.yaml || true
 
 # 8. ExternalDNS 설치
