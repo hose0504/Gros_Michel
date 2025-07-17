@@ -1,4 +1,4 @@
-replicaCount: 2
+replicaCount: 1
 
 image:
   repository: jwh0722/web_v1
@@ -7,7 +7,7 @@ image:
 
 service:
   name: grosmichel-site-service
-  type: LoadBalancer
+  type: clusterIP
   port: 80
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
