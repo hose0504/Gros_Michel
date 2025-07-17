@@ -2,8 +2,11 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "static-site.fullname" . }}-ingress
+  labels:
+    {{- include "static-site.labels" . | nindent 4 }}
   annotations:
     kubernetes.io/ingress.class: nginx
+    external-dns.alpha.kubernetes.io/hostname: www.grosmichel.click
 spec:
   rules:
     - host: {{ .Values.ingress.host }}
@@ -13,7 +16,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "static-site.fullname" . }}
+                name: {{ .Values.service.name }}
                 port:
                   number: {{ .Values.service.port }}
-  tls: []
