@@ -3,13 +3,15 @@ provider: aws
 aws:
   region: ap-northeast-2
   zoneType: public
-  accessKey: ""
-  secretKey: ""
+  accessKey: ""     # IAM Role 사용 시 비워둬도 됨
+  secretKey: ""     # IAM Role 사용 시 비워둬도 됨
 
 domainFilters:
   - grosmichel.click
 
 policy: sync
+overwriteExisting: true     # ✅ 기존 A 레코드 덮어쓰기 허용
+
 registry: txt
 txtOwnerId: grosmichel-eks
 logLevel: debug
