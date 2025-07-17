@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ .Values.service.name }}
 spec:
-  type: {{ .Values.service.type }}
+  type: NodePort
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: 80
       nodePort: {{ .Values.service.nodePort }}
   selector:
     app: {{ include "static-site.fullname" . }}
